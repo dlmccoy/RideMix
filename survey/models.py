@@ -8,6 +8,5 @@ class SurveyResponse(models.Model):
   email = models.CharField(max_length=200, null=True)
 
 class RecommendationSources(models.Model):
-  survey_response = models.ManyToManyField(SurveyResponse)
-  source = models.IntegerField(null=True)
-  other = models.CharField(max_length=200, null=True)
+  survey_responses = models.ManyToManyField(SurveyResponse)
+  source = models.CharField(max_length=200, null=True)

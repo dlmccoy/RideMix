@@ -1,0 +1,70 @@
+<html>
+<head>
+  <title>Where do you get your recommendations?</title>
+  <style>
+.question { margin: 40px 0 40px 0; }
+label { font-weight: bold; }
+.other { font-weight: normal; }
+.option { margin: 10px 0 0 0; }
+  </style>
+</head>
+<body>
+<h1>Where do you get your recommendations?</h1>
+
+<form id="survey_form" name="survey_form">
+
+<div class="question">
+<label for="yelp_use">*1. How often do you use Yelp?</label><br />
+<div class="option"><input type="radio" name="yelp_use" id="yelp_use" value="mult" /> Multiple times per day</div>
+<div class="option"><input type="radio" name="yelp_use" id="yelp_use" value="daily" /> Daily</div>
+<div class="option"><input type="radio" name="yelp_use" id="yelp_use" value="weekly" /> Weekly</div>
+<div class="option"><input type="radio" name="yelp_use" id="yelp_use" value="monthly" /> Monthly</div>
+<div class="option"><input type="radio" name="yelp_use" id="yelp_use" value="never" /> Never</div>
+</div>
+
+<div class="question">
+<label for="yelp_trust">*2. Do you trust the reviews provided by Yelp?</label><br />
+<div class="option"><input type="radio" name="yelp_trust" id="yelp_trust" value="trust_use" /> Yes, I trust them and use them to help make decisions about where to go.</div>
+<div class="option"><input type="radio" name="yelp_trust" id="yelp_trust" value="trust_dont_use" /> Yes, I trust them but do not really use them.</div>
+<div class="option"><input type="radio" name="yelp_trust" id="yelp_trust" value="not_trust" /> No, I do not trust them.</div>
+<div class="option"><input type="radio" name="yelp_trust" id="yelp_trust" value="dont_use" /> I don't use Yelp</div>
+</div>
+
+<div class="question">
+<label for="facebook_use">*3. How often do you use Facebook?</label><br />
+<div class="option"><input type="radio" name="facebook_use" id="facebook_use" value="mult" /> Multiple times per day</div>
+<div class="option"><input type="radio" name="facebook_use" id="facebook_use" value="daily" /> Daily</div>
+<div class="option"><input type="radio" name="facebook_use" id="facebook_use" value="weekly" /> Weekly</div>
+<div class="option"><input type="radio" name="facebook_use" id="facebook_use" value="monthly" /> Monthly</div>
+<div class="option"><input type="radio" name="facebook_use" id="facebook_use" value="never" /> Never</div>
+</div>
+
+<div class="question">
+<label for="facebook_trust">*4. Do you trust the opinions of your Facebook friends?</label><br />
+<div class="option"><input type="radio" name="yelp_trust" id="yelp_trust" value="trust_use" /> Yes, I trust their opinions and use them to help make decisions about where to go.</div>
+<div class="option"><input type="radio" name="yelp_trust" id="yelp_trust" value="trust_dont_use" /> Yes, I trust them but don't really consider them.</div>
+<div class="option"><input type="radio" name="yelp_trust" id="yelp_trust" value="not_trust" /> No, I do not trust their opinions.</div>
+<div class="option"><input type="radio" name="yelp_trust" id="yelp_trust" value="dont_use" /> I don't use Facebook</div>
+</div>
+
+<div class="question">
+<label for="recommendation_sources">*5. When looking for recommendations, which of the following resources (if any) do you use?</label><br />
+<div class="option"><input type="checkbox" name="recommendation_sources" id="recommendation_sources" value="facebook" />Foursquare<br />
+<div class="option"><input type="checkbox" name="recommendation_sources" id="recommendation_sources" value="yelp" />Yelp<br />
+<div class="option"><input type="checkbox" name="recommendation_sources" id="recommendation_sources" value="foursquare" />Foursquare<br />
+<div class="option"><input type="checkbox" name="recommendation_sources" id="recommendation_sources" value="none" />None<br />
+<div class="option"><label class="other" for="recommendation_other">Other (please specify)</label><br />
+<input tytpe="text" name="recommendation_other" id="recommendation_other" /><br />
+</div>
+</div>
+
+<div class="question">
+<label for="email">Enter your email for a chance to win an Amazon gift card!</label><br />
+<div id="privacy_notice">Your email will be used ONLY to determine a gift card winner and contact that winner. Our <a href="/privacy">Privacy Policy</a> can provide more information.</div>
+<input type="text" name="email" id="email"></input>
+</div class="question">
+
+<input type="submit"></input>
+</form>
+
+</body>

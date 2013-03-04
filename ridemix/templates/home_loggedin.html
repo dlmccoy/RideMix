@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block header_addons %}
+<script type="text/javascript"
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAFe_qYWFVOZxGnY-ANNnXWDJ3XNUtGkSE&sensor=true">
+</script>
+<style>
+  #map_canvas, #location_list, #friend_list { margin-left: auto; 
+      margin-right: auto; 
+      width:500px; 
+      height:500px; 
+      border: 2px solid black;}
+  .table { display: table; }
+  .row { display: table-row; }
+  .cell { display: table-cell; }
+  #navbar { width: 500px; margin: 10px auto 10px auto; }
+  #navbar .cell { border: 1px solid black; padding: 10px; }
+  #navbar .selected { background-color: rgba(0, 194, 243, 0.34); }
+  #location_list table { width: 100%; }
+  #location_list td { border-bottom: 1px solid black; padding: 10px; }
+  #location_list .col1 { width: 80%; }
+  #location_list .col2 { width:20%; }
+</style>
+{% endblock %}
+
+{% block content %}
+<h1>RideMix</h1>
+
+<a href="/logout">Log Out</a>
+
+
+<div id="map_canvas" style=";"></div>
+<div id="friend_list" style="display:none;">
+  <h3>Add friends to your current Ride!</h3>
+  <table>
+    {% for friend in friends %}
+    <tr>
+      <td><input type="checkbox" /> {{ friend }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+<div id="location_list" style="display: none;">
+  <table>
+  {% for place in places %}
+    <tr>
+      <td class="col1">{{ place.name }}</td>
+      <td class="col2">{{ place.distance}} miles</td>
+    </tr>
+  {% endfor %}
+  </table>
+</div>
+<div id="navbar" class="table">
+  <div class="row">
+    <div id="map_button" class="cell">Map</div>
+    <div id="list_button" class="cell">List</div>
+    <div id="friend_button" class="cell">Friends</div>
+  </div>
+</div>
+
+<script>
+$(function() {
+ 
+  $("#map_button").click(function(e) {
+    $("#navbar .cell").removeClass('selected');
+    $(e.target).addClass('selected');
+    $("#map_canvas").show();
+    $("#location_list").hide();
+    $("#friend_list").hide();
+  });
+  $("#list_button").click(function(e) {
+    $("#navbar .cell").removeClass('selected');
+    $(e.target).addClass('selected');
+    $("#map_canvas").hide();
+    $("#friend_list").hide();
+    $("#location_list").show();
+  });
+  $("#friend_button").click(function(e) {
+    $("#navbar .cell").removeClass('selected');
+    $(e.target).addClass('selected');
+    $("#map_canvas").hide();
+    $("#location_list").hide();
+    $("#friend_list").show();
+  });
+
+  function nav_callback(arg1) {
+    console.log(arg1);
+    var position = new google.maps.LatLng(arg1.coords.latitude, arg1.coords.longitude);
+    var mapOptions = {
+      center: position,
+      zoom: 14,
+      mapTypeId: google.maps.MapTypeId.ROADMAP,
+    };
+
+    var map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
+
+    var markerOptions = {
+      map: map,
+      position: position,
+      title: "Test",
+    }
+
+    var marker = new google.maps.Marker(markerOptions);
+    marker.setClickable(true);
+    
+  }
+
+  window.watchID = navigator.geolocation.watchPosition(nav_callback);
+
+});
+</script>
+
+{% endblock %}

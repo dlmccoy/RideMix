@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+        <title>
+        </title>
+        <link rel="stylesheet" href="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.css" />
+        <link rel="stylesheet" href="my.css" />
+        <script src="http://code.jquery.com/jquery-1.7.2.min.js">
+        </script>
+        <script src="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js">
+        </script>
+        <script src="my.js">
+        </script>
+        <!-- User-generated css -->
+        <style>
+        </style>
+        <!-- User-generated js -->
+        <script>
+            try {
+
+    $(function() {
+
+    });
+
+  } catch (error) {
+    console.error("Your javascript has an error: " + error);
+  }
+        </script>
+    </head>
+    <body>
+        <!-- Home -->
+        <div data-role="page" id="page1">
+            <div data-theme="a" data-role="header">
+                <h3>
+                    RideMix
+                </h3>
+            </div>
+            <div data-role="content">
+                <img id="places_map" src="https://maps.googleapis.com/maps/api/staticmap?center=Madison, WI&amp;zoom=14&amp;size=288x200&amp;markers=Madison, WI&amp;sensor=false" width="288" height="200" />
+            </div>
+            <div data-theme="a" data-role="footer" data-id"myFooter" data-position="fixed">
+                <div id="navbar" data-role="navbar" data-iconpos="top">
+                    <ul>
+                        <li>
+                            <a href="#page1" data-transition="fade" data-theme="" data-icon="" class="ui-btn-active ui-state-persist">
+                                Map
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#page2" data-transition="fade" data-theme="" data-icon="">
+                                Places
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#page3" data-transition="fade" data-theme="" data-icon="">
+                                Friends
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div data-role="page" id="page2">
+            <div data-theme="a" data-role="header">
+                <h3>
+                    RideMix
+                </h3>
+            </div>
+            <div data-role="content">
+                <ul id="places_list" data-role="listview" data-divider-theme="b" data-inset="true">
+                    <li data-role="list-divider" role="heading">
+                        Places
+                    </li>
+                    <li data-theme="c">
+                        <a href="#" data-transition="slide">
+                            Friends
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div data-theme="a" data-role="footer" data-id"myFooter" data-position="fixed">
+                <div id="navbar2" data-role="navbar" data-iconpos="top">
+                    <ul>
+                        <li>
+                            <a href="#page1" data-transition="fade" data-theme="" data-icon="">
+                                Map
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#page2" data-transition="fade" data-theme="" data-icon="" class="ui-btn-active ui-state-persist">
+                                Places
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#page3" data-transition="fade" data-theme="" data-icon="">
+                                Friends
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+         </div>
+        <div data-role="page" id="page3">
+            <div data-theme="a" data-role="header">
+                <h3>
+                    RideMix
+                </h3>
+            </div>
+            <div data-role="content">
+                <div id="friend_selected_list" data-role="fieldcontain">
+                    <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
+                        <legend>
+                            Selected:
+                        </legend>
+                        <input id="checkbox2" name="" type="checkbox" />
+                        <label for="checkbox2">
+                            Scott Parks
+                        </label>
+                        <input id="checkbox4" name="" type="checkbox" />
+                        <label for="checkbox4">
+                            Jiwon Kim
+                        </label>
+                    </fieldset>
+                </div>
+                <div id="friend_frequent_list" data-role="fieldcontain">
+                    <fieldset data-role="controlgroup" data-type="vertical" data-mini="true">
+                        <legend>
+                            Frequently Added:
+                        </legend>
+                        <input id="checkbox1" name="" type="checkbox" />
+                        <label for="checkbox1">
+                            Option
+                        </label>
+                    </fieldset>
+                </div>
+                <div data-role="fieldcontain" id="friend_add_select">
+                    <fieldset data-role="controlgroup" data-mini="true">
+                        <label for="friend_add_select">
+                            Add friends to your ride
+                        </label>
+                        <input name="" id="friend_add_select" placeholder="Friend Name" value="" type="search" />
+                    </fieldset>
+                </div>
+                <div id="friend_add_list" data-role="fieldcontain">
+                    <fieldset data-role="controlgroup" data-type="vertical" data-mini="true">
+                        <legend>
+                        </legend>
+                        <input id="checkbox3" name="" type="checkbox" />
+                        <label for="checkbox3">
+                            Option
+                        </label>
+                    </fieldset>
+                </div>
+            </div>
+            <div data-theme="a" data-role="footer" data-id"myFooter" data-position="fixed">
+                <div id="navbar3" data-role="navbar" data-iconpos="top">
+                    <ul>
+                        <li>
+                            <a href="#page1" data-transition="fade" data-theme="" data-icon="">
+                                Map
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#page2" data-transition="fade" data-theme="" data-icon="">
+                                Places
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#page3" data-transition="fade" data-theme="" data-icon="" class="ui-btn-active ui-state-persist">
+                                Friends
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

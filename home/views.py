@@ -4,6 +4,9 @@ from django.contrib.auth import logout
 from django.http import HttpResponse
 from django.shortcuts import redirect, render_to_response
 
+def NewHome(request):
+  return render_to_response('new_home.html')
+
 def Home(request):
   if request.user.is_authenticated():
     args = {

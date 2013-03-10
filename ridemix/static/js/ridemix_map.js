@@ -1,25 +1,27 @@
-$("#map_button").click(function(e) {
-    $("#navbar .cell").removeClass('selected');
-    $(e.target).addClass('selected');
-    $("#map_canvas").show();
-    $("#location_list").hide();
-    $("#friend_list").hide();
-});
+$(function() {
+    $("#map_button").click(function(e) {
+        $("#navbar .cell").removeClass('selected');
+        $(e.target).addClass('selected');
+        $("#map_canvas").show();
+        $("#location_list").hide();
+        $("#friend_list").hide();
+    });
 
-$("#list_button").click(function(e) {
-    $("#navbar .cell").removeClass('selected');
-    $(e.target).addClass('selected');
-    $("#map_canvas").hide();
-    $("#friend_list").hide();
-    $("#location_list").show();
-});
+    $("#list_button").click(function(e) {
+        $("#navbar .cell").removeClass('selected');
+        $(e.target).addClass('selected');
+        $("#map_canvas").hide();
+        $("#friend_list").hide();
+        $("#location_list").show();
+    });
 
-$("#friend_button").click(function(e) {
-    $("#navbar .cell").removeClass('selected');
-    $(e.target).addClass('selected');
-    $("#map_canvas").hide();
-    $("#location_list").hide();
-    $("#friend_list").show();
+    $("#friend_button").click(function(e) {
+        $("#navbar .cell").removeClass('selected');
+        $(e.target).addClass('selected');
+        $("#map_canvas").hide();
+        $("#location_list").hide();
+        $("#friend_list").show();
+    });
 });
 
 function nav_callback(arg1) {
@@ -41,5 +43,5 @@ function nav_callback(arg1) {
 
     var marker = new google.maps.Marker(markerOptions);
     marker.setClickable(true);
-    
+
 }

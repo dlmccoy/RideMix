@@ -10,6 +10,8 @@ urlpatterns = patterns('',
     url(r'^new_home', 'home.views.NewHome'),
     url(r'^privacy', 'home.views.Privacy'),
     url(r'^recommendation_survey', 'survey.views.RecommendationSurvey'),
+    url(r'^yelpsearch', 'yelp.views.YelpQuery'),
+
     url(r'', include('social_auth.urls')),
     url(r'^logout', 'home.views.LogOut'),
     url(r'^get/friends', 'home.views.GetFriends'),

@@ -1,0 +1,58 @@
+#map_canvas, #location_list, #friend_list
+{
+    margin-left: auto; 
+    margin-right: auto; 
+    width:500px; 
+    height:500px; 
+    border: 2px solid black;
+}
+
+.table
+{
+    display: table;
+}
+
+.row
+{
+    display: table-row;
+}
+
+.cell
+{
+    display: table-cell;
+}
+
+#navbar
+{
+    width: 500px; margin: 10px auto 10px auto;
+}
+
+#navbar .cell
+{
+    border: 1px solid black; padding: 10px;
+}
+
+#navbar .selected
+{
+    background-color: rgba(0, 194, 243, 0.34);
+}
+
+#location_list table
+{
+    width: 100%;
+}
+
+#location_list td
+{
+    border-bottom: 1px solid black; padding: 10px;
+}
+
+#location_list .col1
+{
+    width: 80%;
+}
+
+#location_list .col2
+{ 
+    width:20%;
+}

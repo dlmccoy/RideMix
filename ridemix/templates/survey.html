@@ -2,50 +2,8 @@
 <head>
   <title>Where do you get your recommendations?</title>
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-  <style>
-.question { margin: 40px 0 40px 0; }
-.question_text { font-weight: bold; margin-bottom:10px}
-.option { position: relative; }
-.option input { position: absolute; top: 4px; left: 4px; }
-.option label { display: inline-block; width: 100%; padding: 5px 0 5px 30px; }
-.option label:hover { background-color: rgba(100, 100, 100, 0.10); cursor:pointer;}
-.other { font-weight: normal; }
-  </style>
-  <script>
-    $(function() {
-      $("#survey_form").submit(function(e){
-        //e.preventDefault();
-        var yelp_use = $("[name='yelp_use']:checked").val();
-        var yelp_trust = $("[name='yelp_trust']:checked").val();
-        var facebook_use = $("[name='facebook_use']:checked").val();
-        var facebook_trust = $("[name='facebook_trust']:checked").val();
-        var recommendation_sources = $("[name='recommendation_sources']:checked");
-	var recommendation_other = $("#recommendation_other").val();
-	if(yelp_use == undefined) {
-          alert("Please answer question 1.");
-	  return false;
-	}
-	if(yelp_trust == undefined) {
-          alert("Please answer question 2.");
-	  return false;
-	}
-	if(facebook_use == undefined) {
-          alert("Please answer question 3.");
-	  return false;
-	}
-	if(facebook_trust == undefined) {
-          alert("Please answer question 4.");
-	  return false;
-	}
-        if(recommendation_sources.length == 0 && recommendation_other == "") {
-	  alert("Please answer question 5.");
-          return false;
-        } 
-        return true;
-      });
-
-    });
-  </script>	
+  <script src="static/js/survey.js"></script>
+  <link rel="stylesheet" type="text/css" href="static/css/survey.css">
 </head>
 <body>
 <h1>Where do you get your recommendations?</h1>

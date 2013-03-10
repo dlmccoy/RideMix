@@ -1,11 +1,15 @@
 # Create your views here.
 
+import json
+import random
+import string
+
 from django.contrib.auth import logout
 from django.http import HttpResponse
 from django.shortcuts import redirect, render, render_to_response
 
 def NewHome(request):
-  return render_to_response('new_home.html')
+  return render(request, 'new_home.html')
 
 def Home(request):
   if request.user.is_authenticated():
@@ -35,3 +39,9 @@ def Privacy(request):
 def LogOut(request):
   logout(request)
   return redirect('/')
+
+def GetFriends(request):
+  args = []
+  for i in range(1000):
+    args.append(''.join(random.choice(string.lowercase) for j in range(10))) 
+  return HttpResponse(json.dumps(args), mimetype="application/json")

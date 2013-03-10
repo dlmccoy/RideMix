@@ -1,0 +1,12 @@
+<html>
+<head>
+  <title>{% block title %}RideMix{% endblock %}</title>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/base.css">
+  {% block header_addons %}{% endblock %}
+</head>
+<body>
+{% block content %}{% endblock %}
+</body>
+
+</html>

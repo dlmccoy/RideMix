@@ -4,23 +4,8 @@
 <script type="text/javascript"
   src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCwZMghR10qu_E1hvmt4UGo_ZCurDTuwAc&sensor=true">
 </script>
-<style>
-  #map_canvas, #location_list, #friend_list { margin-left: auto; 
-      margin-right: auto; 
-      width:500px; 
-      height:500px; 
-      border: 2px solid black;}
-  .table { display: table; }
-  .row { display: table-row; }
-  .cell { display: table-cell; }
-  #navbar { width: 500px; margin: 10px auto 10px auto; }
-  #navbar .cell { border: 1px solid black; padding: 10px; }
-  #navbar .selected { background-color: rgba(0, 194, 243, 0.34); }
-  #location_list table { width: 100%; }
-  #location_list td { border-bottom: 1px solid black; padding: 10px; }
-  #location_list .col1 { width: 80%; }
-  #location_list .col2 { width:20%; }
-</style>
+<script type="text/javascript" src="static/js/ridemix_map.js"></script>
+<link rel="stylesheet" type="text/css" href="static/css/home_loggedin.css">
 {% endblock %}
 
 {% block content %}
@@ -59,55 +44,7 @@
 </div>
 
 <script>
-$(function() {
- 
-  $("#map_button").click(function(e) {
-    $("#navbar .cell").removeClass('selected');
-    $(e.target).addClass('selected');
-    $("#map_canvas").show();
-    $("#location_list").hide();
-    $("#friend_list").hide();
-  });
-  $("#list_button").click(function(e) {
-    $("#navbar .cell").removeClass('selected');
-    $(e.target).addClass('selected');
-    $("#map_canvas").hide();
-    $("#friend_list").hide();
-    $("#location_list").show();
-  });
-  $("#friend_button").click(function(e) {
-    $("#navbar .cell").removeClass('selected');
-    $(e.target).addClass('selected');
-    $("#map_canvas").hide();
-    $("#location_list").hide();
-    $("#friend_list").show();
-  });
-
-  function nav_callback(arg1) {
-    console.log(arg1);
-    var position = new google.maps.LatLng(arg1.coords.latitude, arg1.coords.longitude);
-    var mapOptions = {
-      center: position,
-      zoom: 14,
-      mapTypeId: google.maps.MapTypeId.ROADMAP,
-    };
-
-    var map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
-
-    var markerOptions = {
-      map: map,
-      position: position,
-      title: "Test",
-    }
-
-    var marker = new google.maps.Marker(markerOptions);
-    marker.setClickable(true);
-    
-  }
-
   window.watchID = navigator.geolocation.watchPosition(nav_callback);
-
-});
 </script>
 
 {% endblock %}

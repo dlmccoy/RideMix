@@ -2,7 +2,7 @@
 
 from django.contrib.auth import logout
 from django.http import HttpResponse
-from django.shortcuts import redirect, render_to_response
+from django.shortcuts import redirect, render, render_to_response
 
 def NewHome(request):
   return render_to_response('new_home.html')
@@ -26,8 +26,8 @@ def Home(request):
       'friends': ['Victoria Kwong', 'Dillon McCoy', 'Alejandro Rodriguez Lopez',
                   'Michael Garland', 'James Fosco'],
     }
-    return render_to_response('home_loggedin.html', args)
-  return render_to_response('home.html')
+    return render(request, 'home_loggedin.html', args)
+  return render(request, 'home.html')
 
 def Privacy(request):
   return render_to_response('privacy.html')

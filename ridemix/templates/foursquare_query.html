@@ -1,0 +1,89 @@
+<html>
+<head>
+  <title>Foursquare Query</title>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <style>
+      .question { margin: 40px 0 40px 0; }
+      .question_text { font-weight: bold; margin-bottom:10px}
+      .option {   position: relative; }
+      .option input { position: absolute; top: 4px; left: 4px; }
+      .option label { display: inline-block; width: 100%; padding: 5px 0 5px 30px; }
+      .option label:hover { background-color: rgba(100, 100, 100, 0.10); cursor:pointer;}
+      .other { font-weight: normal; }
+  </style>
+  <script>
+      $(function() {
+      var request;
+      $("#foursquare_form").submit(function(e){
+                       e.preventDefault();
+                       // abort any pending request
+                       if (request) {
+                                   request.abort();
+                       }
+                        var near = $("#near").val();
+                        if(near == "") {
+                              alert("You must enter a location.");
+                              return false;
+                        }
+
+                                   
+                       var $form = $(this);
+                       var $inputs = $form.find("input, select, button, textarea");
+                       // serialize the data in the form
+                       var serializedData = $form.serialize();
+                       
+                       // disable the inputs for the duration of the ajax request
+                       $inputs.prop("disabled", true);
+                       
+                        var success = function (response, textStatus, jqXHR){
+                                   // log a message to the console
+                                   console.log("Hooray, it worked!");
+                                   var venues = "<ol>";
+                                   for (var i = 0; i < response.venues.length; i++) {
+                                        venues = venues + "<li id=" + response.venues[i].name + ">" + response.venues[i].name + ": " + response.venues[i].location.address + "</li>";
+                                   }
+                                   venues = venues + "</ol>";
+                                   $("#query_results").html(venues);
+                        };
+                        var request = $.getJSON("/foursquare_query", serializedData, success);
+                       
+                       // callback handler that will be called on failure
+                       request.fail(function (jqXHR, textStatus, errorThrown){
+                                    // log the error to the console
+                                    //console.error(
+                                                  //"The following error occured: "+
+                                                  //textStatus, errorThrown
+                                                  //);
+                                    console.log(jqXHR);
+                                    });
+                       
+                       // callback handler that will be called regardless
+                       // if the request failed or succeeded
+                       request.always(function () {
+                            // reenable the inputs
+                            $inputs.prop("disabled", false);
+                        });
+                    return false;
+            });
+        });
+  </script>	
+</head>
+<body>
+
+<form id="foursquare_form" name="foursquare_form" action="/foursquare_query" method="post">{% csrf_token %}
+
+<div class="question">
+  <label class="question_text">Query: </label>
+  <input type="text" name="query">
+</div>
+
+<div class="question">
+   <label class="question_text">Near: </label>
+   <input type="text" name="near" id="near">
+</div>
+
+<input type="submit"></input>
+</form>
+    
+<div id="query_results"></div>
+</body>

@@ -37,6 +37,11 @@
     background-color: rgba(0, 194, 243, 0.34);
 }
 
+#location_list
+{
+    overflow-y: scroll;
+}
+
 #location_list table
 {
     width: 100%;

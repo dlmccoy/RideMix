@@ -49,10 +49,15 @@
 
 #location_list .col1
 {
-    width: 80%;
+    width: 60%;
 }
 
 #location_list .col2
+{ 
+    width:20%;
+}
+
+#location_list .col3
 { 
     width:20%;
 }

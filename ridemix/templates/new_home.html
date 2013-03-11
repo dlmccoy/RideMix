@@ -7,33 +7,20 @@
         <meta name="apple-mobile-web-app-status-bar-style" content="black" />
         <title>
         </title>
-        <link rel="stylesheet" href="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.css" />
-        <link rel="stylesheet" href="my.css" />
+        <link rel="stylesheet"
+          href="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.css" />
         <script src="http://code.jquery.com/jquery-1.7.2.min.js">
         </script>
-        <script src="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js">
+        <script 
+          src="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js">
         </script>
-        <script src="my.js">
-        </script>
-        <!-- User-generated css -->
-        <style>
-        </style>
-        <!-- User-generated js -->
-        <script>
-            try {
-
-    $(function() {
-
-    });
-
-  } catch (error) {
-    console.error("Your javascript has an error: " + error);
-  }
+        <script 
+          src="{{ STATIC_URL }}js/main.js">
         </script>
     </head>
     <body>
         <!-- Home -->
-        <div data-role="page" id="page1">
+        <div data-role="page" id="home_page">
             <div data-theme="a" data-role="header">
                 <h3>
                     RideMix
@@ -46,17 +33,17 @@
                 <div id="navbar" data-role="navbar" data-iconpos="top">
                     <ul>
                         <li>
-                            <a href="#page1" data-transition="fade" data-theme="" data-icon="" class="ui-btn-active ui-state-persist">
+                            <a href="#home_page" data-transition="fade" data-theme="" data-icon="" class="ui-btn-active ui-state-persist">
                                 Map
                             </a>
                         </li>
                         <li>
-                            <a href="#page2" data-transition="fade" data-theme="" data-icon="">
+                            <a href="#location_page" data-transition="fade" data-theme="" data-icon="">
                                 Places
                             </a>
                         </li>
                         <li>
-                            <a href="#page3" data-transition="fade" data-theme="" data-icon="">
+                            <a href="#friend_page" data-transition="fade" data-theme="" data-icon="">
                                 Friends
                             </a>
                         </li>
@@ -64,7 +51,7 @@
                 </div>
             </div>
         </div>
-        <div data-role="page" id="page2">
+        <div data-role="page" id="location_page">
             <div data-theme="a" data-role="header">
                 <h3>
                     RideMix
@@ -86,17 +73,17 @@
                 <div id="navbar2" data-role="navbar" data-iconpos="top">
                     <ul>
                         <li>
-                            <a href="#page1" data-transition="fade" data-theme="" data-icon="">
+                            <a href="#home_page" data-transition="fade" data-theme="" data-icon="">
                                 Map
                             </a>
                         </li>
                         <li>
-                            <a href="#page2" data-transition="fade" data-theme="" data-icon="" class="ui-btn-active ui-state-persist">
+                            <a href="#location_page" data-transition="fade" data-theme="" data-icon="" class="ui-btn-active ui-state-persist">
                                 Places
                             </a>
                         </li>
                         <li>
-                            <a href="#page3" data-transition="fade" data-theme="" data-icon="">
+                            <a href="#friend_page" data-transition="fade" data-theme="" data-icon="">
                                 Friends
                             </a>
                         </li>
@@ -104,7 +91,7 @@
                 </div>
             </div>
          </div>
-        <div data-role="page" id="page3">
+        <div data-role="page" id="friend_page">
             <div data-theme="a" data-role="header">
                 <h3>
                     RideMix
@@ -118,11 +105,11 @@
                         </legend>
                         <input id="checkbox2" name="" type="checkbox" />
                         <label for="checkbox2">
-                            Scott Parks
+                            Firstname Lastname
                         </label>
                         <input id="checkbox4" name="" type="checkbox" />
                         <label for="checkbox4">
-                            Jiwon Kim
+                            Firstname Lastname 
                         </label>
                     </fieldset>
                 </div>
@@ -147,12 +134,14 @@
                 </div>
                 <div id="friend_add_list" data-role="fieldcontain">
                     <fieldset data-role="controlgroup" data-type="vertical" data-mini="true">
-                        <legend>
-                        </legend>
-                        <input id="checkbox3" name="" type="checkbox" />
+                        <!--<input id="checkbox3" name="" type="checkbox" />
                         <label for="checkbox3">
                             Option
                         </label>
+                        <input id="checkbox5" name="" type="checkbox" />
+                        <label for="checkbox5">
+                            Option
+                        </label>-->
                     </fieldset>
                 </div>
             </div>
@@ -160,17 +149,17 @@
                 <div id="navbar3" data-role="navbar" data-iconpos="top">
                     <ul>
                         <li>
-                            <a href="#page1" data-transition="fade" data-theme="" data-icon="">
+                            <a href="#home_page" data-transition="fade" data-theme="" data-icon="">
                                 Map
                             </a>
                         </li>
                         <li>
-                            <a href="#page2" data-transition="fade" data-theme="" data-icon="">
+                            <a href="#location_page" data-transition="fade" data-theme="" data-icon="">
                                 Places
                             </a>
                         </li>
                         <li>
-                            <a href="#page3" data-transition="fade" data-theme="" data-icon="" class="ui-btn-active ui-state-persist">
+                            <a href="#friend_page" data-transition="fade" data-theme="" data-icon="" class="ui-btn-active ui-state-persist">
                                 Friends
                             </a>
                         </li>

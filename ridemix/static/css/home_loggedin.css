@@ -37,6 +37,11 @@
     background-color: rgba(0, 194, 243, 0.34);
 }
 
+#location_list
+{
+    overflow-y: scroll;
+}
+
 #location_list table
 {
     width: 100%;
@@ -49,10 +54,15 @@
 
 #location_list .col1
 {
-    width: 80%;
+    width: 60%;
 }
 
 #location_list .col2
+{ 
+    width:20%;
+}
+
+#location_list .col3
 { 
     width:20%;
 }

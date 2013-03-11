@@ -26,13 +26,13 @@
   </table>
 </div>
 <div id="location_list" style="display: none;">
-  <table>
-  {% for place in places %}
+  <table id="loc_results">
+  <!--{% for place in places %}
     <tr>
       <td class="col1">{{ place.name }}</td>
       <td class="col2">{{ place.distance}} miles</td>
     </tr>
-  {% endfor %}
+  {% endfor %}-->
   </table>
 </div>
 <div id="navbar" class="table">
@@ -44,7 +44,7 @@
 </div>
 
 <script>
-  window.watchID = navigator.geolocation.watchPosition(nav_callback);
+  //window.watchID = navigator.geolocation.watchPosition(nav_callback);
+  ridemix_init();
 </script>
-
 {% endblock %}

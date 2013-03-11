@@ -12,6 +12,10 @@ urlpatterns = patterns('',
     url(r'^recommendation_survey', 'survey.views.RecommendationSurvey'),
     url(r'^yelpsearch', 'yelp.views.YelpHome'),
     url(r'^yelp_query', 'yelp.views.YelpQuery'),
+    url(r'^yelpsearch', 'yelp.views.YelpQuery'),
+    url(r'^fbfriends', 'facebook.views.GetFacebookFriends'),
+    url(r'^fbfriends/(?P<friend_id>\d+)/$', 'facebook.views.GetFriendsCheckins'),
+
 
     url(r'', include('social_auth.urls')),
     url(r'^logout', 'home.views.LogOut'),

@@ -1,3 +1,4 @@
 *.pyc
 ridemix/settings.py
 ridemix/wsgi.py
+*.swp

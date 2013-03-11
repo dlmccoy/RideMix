@@ -6,9 +6,12 @@ var App = function() {
     var cardStack;
     var menuCard;
     var mapContainer;
+    var friendContainer;
+    var listContainer;
     var mapHtml;
     var map;
     var marker;
+    var view;
 
     
 
@@ -30,10 +33,33 @@ var App = function() {
 
 	menuCard = new joCard([
 	    //mapContainer = new joContainer("<img id='places_map' src='https://maps.googleapis.com/maps/api/staticmap?center=Madison, WI&amp;zoom=14&amp;size=288x200&amp;markers=Madison, WI&amp;sensor=false' width='288' height='200' />"),
-	    mapContainer = new joContainer("<div id='map_canvas'></div>"), 
-	    new joOption(["Map", "List", "Friends"])
+	    mapContainer = new joContainer("<div id='map_canvas' style='height:300px;'></div>"), 
+	    listContainer = new joContainer("<div id='location_list' style='height:300px; display:none;'><table id='loc_results'></table></div>"),
+	    friendContainer = new joContainer("<div id='friend_list' style='height:300px; display:none;'></div>"),
+	    view = new joOption([{title: "Map", id: "map"}, {title: "List", id: "list"}, {title:  "Friends", id: "friends"}])
 	]);
 	
+	view.selectEvent.subscribe(function(id) {
+	    console.log(id);
+	    switch(id) {
+	    case "map":
+		 $("#map_canvas").show();
+        $("#location_list").hide();
+        $("#friend_list").hide();
+		break;
+	    case "list":
+		 $("#map_canvas").hide();
+        $("#friend_list").hide();
+        $("#location_list").show();
+		break;
+	    case "friends":
+		 $("#map_canvas").hide();
+        $("#location_list").hide();
+        $("#friend_list").show();
+		break;
+	    }
+	});
+
 	cardStack.push(menuCard);
 
 	if(initialize_map()) {
@@ -63,7 +89,7 @@ var App = function() {
         navigator.geolocation.getCurrentPosition(function(position) {
             var pos = new google.maps.LatLng(position.coords.latitude,
                                              position.coords.longitude);
-            var image = 'static/media/minibug.jpg';
+            var image = 'http://static.ridemix.com/prod/media/minibug.jpg';
             marker = new google.maps.Marker({
                 map: map,
                 position: pos,

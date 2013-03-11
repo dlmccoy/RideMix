@@ -15,6 +15,7 @@ urlpatterns = patterns('',
     url(r'', include('social_auth.urls')),
     url(r'^logout', 'home.views.LogOut'),
     url(r'^get/friends', 'home.views.GetFriends'),
+    url(r'^get/places', 'home.views.GetPlaces'),
     # url(r'^ridemix/', include('ridemix.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:

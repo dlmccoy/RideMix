@@ -1,0 +1,22 @@
+
+  {% extends "base.html" %}
+   {% block header_addons %}
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/jo/jo.css" />
+    {% endblock %}
+
+  {% block content %}
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jo.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jo_min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/App.js"></script>
+    <script type="text/javascript"
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCwZMghR10qu_E1hvmt4UGo_ZCurDTuwAc&sensor=true">
+</script>
+<!--<script type="text/javascript" src="{{ STATIC_URL }}js/ridemix_map.js"></script> -->
+    <script type="text/javascript">
+      jo.load();
+      App.init();
+    </script>
+  {% endblock %}
+

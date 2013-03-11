@@ -1,38 +1,57 @@
-var map;
-var marker;
+var App = function() {
+    var deviceScreen;
+    var mainContainer;
+    var mainNavBar;
+    var mainMenu;
+    var cardStack;
+    var menuCard;
+    var mapContainer;
+    var mapHtml;
+    var map;
+    var marker;
 
-function ridemix_init() {
-    $("#map_button").click(function(e) {
-        $("#navbar .cell").removeClass('selected');
-        $(e.target).addClass('selected');
-        $("#map_canvas").show();
-        $("#location_list").hide();
-        $("#friend_list").hide();
-    });
-    $("#map_button").click()
+    
 
-    $("#list_button").click(function(e) {
-        $("#navbar .cell").removeClass('selected');
-        $(e.target).addClass('selected');
-        $("#map_canvas").hide();
-        $("#friend_list").hide();
-        $("#location_list").show();
-    });
 
-    $("#friend_button").click(function(e) {
-        $("#navbar .cell").removeClass('selected');
-        $(e.target).addClass('selected');
-        $("#map_canvas").hide();
-        $("#location_list").hide();
-        $("#friend_list").show();
-    });
+    var init = function() {
+	mainContainer = new joContainer([
+	    mainNavBar = new joNavbar("RideMix"),
+	    cardStack = new joStackScroller(),
+	]).setStyle({position: "absolute", top: "0", left: "0", bottom: "0", right: "0"});
 
-    if (initialize_map()) {
-        window.watchID = navigator.geolocation.watchPosition(nav_callback);
-    }
-}
+	deviceScreen = new joScreen(mainContainer);
+	mainNavBar.setStack(cardStack);
 
-function initialize_map() {
+
+
+	
+	
+	
+
+	menuCard = new joCard([
+	    //mapContainer = new joContainer("<img id='places_map' src='https://maps.googleapis.com/maps/api/staticmap?center=Madison, WI&amp;zoom=14&amp;size=288x200&amp;markers=Madison, WI&amp;sensor=false' width='288' height='200' />"),
+	    mapContainer = new joContainer("<div id='map_canvas'></div>"), 
+	    new joOption(["Map", "List", "Friends"])
+	]);
+	
+	cardStack.push(menuCard);
+
+	if(initialize_map()) {
+	    window.watchID = navigator.geolocation.watchPosition(nav_callback);
+	}
+
+	
+	
+    };
+
+
+
+    return {
+	init: init
+    };
+
+
+    function initialize_map() {
     //console.log(arg1);
     var mapOptions = {
         zoom: 16,
@@ -67,6 +86,7 @@ function initialize_map() {
     return true;
 }
 
+
 function handleNoGeolocation(errorFlag) {
     if (errorFlag) {
         var content = 'Error: The Geolocation service failed.';
@@ -83,7 +103,6 @@ function handleNoGeolocation(errorFlag) {
     var infowindow = new google.maps.InfoWindow(options);
     map.setCenter(options.position);
 }
-
 
 function update_results_list() { 
     url = 'get/places?location=';
@@ -127,3 +146,5 @@ function nav_callback(loc) {
     var pos = new google.maps.LatLng(loc.coords.latitude, loc.coords.longitude);
     marker.setPosition(pos);
 }
+
+}();

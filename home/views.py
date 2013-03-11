@@ -35,3 +35,6 @@ def Privacy(request):
 def LogOut(request):
   logout(request)
   return redirect('/')
+
+def Jo(request):
+  return render(request, 'jo.html')

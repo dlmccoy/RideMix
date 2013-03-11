@@ -11,6 +11,9 @@ urlpatterns = patterns('',
     url(r'^privacy', 'home.views.Privacy'),
     url(r'^recommendation_survey', 'survey.views.RecommendationSurvey'),
     url(r'^yelpsearch', 'yelp.views.YelpQuery'),
+    url(r'^foursquare_query', 'foursq.views.FoursquareQuery'),
+    url(r'^foursquare', 'foursq.views.FoursquareHome'),
+
 
     url(r'', include('social_auth.urls')),
     url(r'^logout', 'home.views.LogOut'),

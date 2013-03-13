@@ -1,6 +1,7 @@
 var map;
 var marker;
 var loc_results = []; //just google places right now
+var yelp_results = [];
 var done = { p:1 };
 
 /* locs is an array containing all destinations you want to find the distance to*/
@@ -189,8 +190,11 @@ function update_results_list() {
       data: {
         latitude: latitude,
         longitude: longitude,
+        sort: 2,
+        term: 'restaurant'
       },
     }).done(function(data) {
+      yelp_results = data['businesses'];
       var businesses = data['businesses']
       var result_string = "<li data-role=\"list-divider\" role=\"heading\">Yelp Results</li>";
       for(var i in businesses) {
@@ -201,7 +205,7 @@ function update_results_list() {
             
             var open_now = place.is_closed?  "Closed" :"Open";
             result_string += "<div style=\"float:right;\">" + open_now +"</div><br />";
-            result_string += "<div style=\"float:right;\">5.0 Miles</div>";
+            result_string += "<div style=\"float:right;\">" + place.rating + "</div>";
             result_string += "</a></li>";
         
       }

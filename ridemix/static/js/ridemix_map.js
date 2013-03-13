@@ -1,8 +1,10 @@
 var map;
 var marker;
 var places_results = []; //just google places right now
-var done = { p:1 };
+var yelp_results = [];
+var done = { p:1, y:1 };
 var all_results = {};
+var all_places = [];
 
 /* locs is an array containing all destinations you want to find the distance to*/
 function latlng_dist(destinations) {
@@ -29,6 +31,7 @@ function dist_callback(response, status) {
     }
     places_results.sort(compare_loc_dist);
     done.p++;
+    console.log("Google Places done");
   }
 }
 
@@ -141,7 +144,7 @@ function write_places_results_list() {
         result_string += "<div style=\"float:right;\">" + place.distance + "</div>";
         result_string += "</a></li>";
     }
-    $("#places_list").append(result_string).listview('refresh');
+    //$("#places_list").append(result_string).listview('refresh');
 }
 
 function update_results_list() { 
@@ -152,9 +155,6 @@ function update_results_list() {
     url += ll_string;
     url += '&types=restaurant';
     $.getJSON(url, function(json_data) { 
-        table = $("#places_results");
-
-        var result_string = "<li data-role=\"list-divider\" role=\"heading\">Google Places</li>";
         var dests = [];
         for (i=0;i<json_data.results.length;i++) {
             place = json_data.results[i];
@@ -190,8 +190,11 @@ function update_results_list() {
       data: {
         latitude: latitude,
         longitude: longitude,
+        sort: 2,
+        term: 'restaurant'
       },
     }).done(function(data) {
+      yelp_results = data['businesses'];
       var businesses = data['businesses']
       var result_string = "<li data-role=\"list-divider\" role=\"heading\">Yelp Results</li>";
       for(var i in businesses) {
@@ -202,29 +205,85 @@ function update_results_list() {
             
             var open_now = place.is_closed?  "Closed" :"Open";
             result_string += "<div style=\"float:right;\">" + open_now +"</div><br />";
-            result_string += "<div style=\"float:right;\">5.0 Miles</div>";
+            result_string += "<div style=\"float:right;\">" + place.rating + "</div>";
             result_string += "</a></li>";
         
       }
-      $("#places_list").append(result_string).listview('refresh');
-      done.p++;
+      //$("#places_list").append(result_string).listview('refresh');
+      console.log("Yelp done");
+      done.y++;
     });
 
-    done.watch("p", function(id, oldval, newval) {
-        combine_results();
-        done.unwatch("p");
+    done.watch("y", function(id, oldval, newval) {
+        setTimeout(function(){ 
+            combine_results();
+        },500);
+        done.unwatch("y");
     });
 
 }
 
 function combine_results() {
     //all_results
-    var i = 0;
-    for(;i<places_results.length;i++) {
+    for(i=0;i<places_results.length;i++) {
         name = places_results[i]["name"];
         all_results[name] = places_results[i];
         all_results[name]["places_rank"] = i;
+        all_results[name]["yelp_rank"] = 0;
     }
+    for(j=0;j<yelp_results.length;j++) {
+        name = yelp_results[j]["name"];
+        if (all_results[name] == undefined) {
+            // yelp result not in places result
+            all_results[name] = yelp_results[j];
+            all_results[name]["places_rank"] = 0;
+            all_results[name]["yelp_rank"] = j;
+        } else {
+            // yelp result in places result
+            all_results[name]["yelp_rank"] = j;
+        }
+    }
+    for (var key in all_results) { all_places.push(all_results[key]); }
+    all_places.sort(my_compare);
+    write_comb_results_list();
+}
+
+function my_compare(a,b) {
+    a_total = a["places_rank"] + a["yelp_rank"];
+    b_total = b["places_rank"] + b["yelp_rank"];
+
+    if (a_total < b_total) {
+        return -1;
+    } else if (a_total > b_total) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
+function write_comb_results_list() {
+    var result_string = "<li data-role=\"list-divider\" role=\"heading\">Combined Results</li>";
+    for (i=0;i<all_places.length;i++) {
+        place = all_places[i];
+        result_string += "<li data-theme=\"c\">";
+        result_string += "<a href=\"#\" data-transition=\"slide\">";
+        result_string += "<div style=\"display:inline-block;\">" + place.name + "</div>";
+        
+        if (place.open_now) {
+            result_string += "<div style=\"float:right;\">" + place.open_now + "</div><br />";
+        } else {
+            open_now = place.is_closed ? "Closed" : "Open";
+            result_string += "<div style=\"float:right;\">" + open_now + "</div><br />";
+        }
+        if (typeof(place.distance) == "string") {
+            result_string += "<div style=\"float:right;\">" + place.distance + "</div>";
+        } else {
+            distance = place.distance * 0.000621371192;
+            result_string += "<div style=\"float:right;\">" + distance.toFixed(2) + " mi</div>";
+        }
+        result_string += "</a></li>";
+    }
+    $("#places_list").append(result_string).listview('refresh');
 }
 
 function success_fn(data) {

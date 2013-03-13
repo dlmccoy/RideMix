@@ -8,6 +8,7 @@ import simplejson, urllib
 from django.contrib.auth import logout
 from django.http import HttpResponse
 from django.shortcuts import redirect, render, render_to_response
+from django.conf import settings
 
 def NewHome(request):
   return render(request, 'new_home.html')
@@ -53,7 +54,7 @@ def GetFriends(request):
 
 def GetPlaces(request):
   PLACES_BASE_URL = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json'
-  pl_args = {'sensor':'true','key':'AIzaSyCwZMghR10qu_E1hvmt4UGo_ZCurDTuwAc','rankby':'distance'}
+  pl_args = {'sensor':'true','key':settings.GOOGLE_API_KEY,'rankby':'distance'}
 
   pl_args.update({'location':request.GET.__getitem__('location')})
   pl_args.update({'types':request.GET.__getitem__('types')})

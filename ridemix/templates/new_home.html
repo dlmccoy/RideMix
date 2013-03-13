@@ -14,8 +14,17 @@
         <script 
           src="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js">
         </script>
+        <script type="text/javascript"
+          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCwZMghR10qu_E1hvmt4UGo_ZCurDTuwAc&sensor=true">
+        </script>
         <script 
           src="{{ STATIC_URL }}js/main.js">
+        </script>
+        <script type="text/javascript" src="{{ STATIC_URL }}js/ridemix_map.js"></script>
+        <script>
+          $(function() {
+            ridemix_init();
+          });
         </script>
     </head>
     <body>
@@ -27,7 +36,7 @@
                 </h3>
             </div>
             <div data-role="content">
-                <img id="places_map" src="https://maps.googleapis.com/maps/api/staticmap?center=Madison, WI&amp;zoom=14&amp;size=288x200&amp;markers=Madison, WI&amp;sensor=false" width="288" height="200" />
+              <div id="map_canvas" style="height: 500px"></div>
             </div>
             <div data-theme="a" data-role="footer" data-id"myFooter" data-position="fixed">
                 <div id="navbar" data-role="navbar" data-iconpos="top">
@@ -59,14 +68,6 @@
             </div>
             <div data-role="content">
                 <ul id="places_list" data-role="listview" data-divider-theme="b" data-inset="true">
-                    <li data-role="list-divider" role="heading">
-                        Places
-                    </li>
-                    <li data-theme="c">
-                        <a href="#" data-transition="slide">
-                            Friends
-                        </a>
-                    </li>
                 </ul>
             </div>
             <div data-theme="a" data-role="footer" data-id"myFooter" data-position="fixed">

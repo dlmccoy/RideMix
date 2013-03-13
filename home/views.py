@@ -47,7 +47,7 @@ def Jo(request):
 
 def GetFriends(request):
   args = []
-  for i in range(1000):
+  for i in range(500):
     args.append(''.join(random.choice(string.lowercase) for j in range(10))) 
   return HttpResponse(json.dumps(args), mimetype="application/json")
 

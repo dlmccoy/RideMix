@@ -29,7 +29,7 @@ def YelpQuery(request):
   latitude = request.GET.get('latitude')
   longitude = request.GET.get('longitude')
 
-  ll_string = latitude + "," + "longitude"
+  ll_string = latitude + "," + longitude
   
   url = 'http://api.yelp.com/v2/search'
 
@@ -53,7 +53,7 @@ def YelpQuery(request):
   client.set_signature_method(oauth.SignatureMethod_HMAC_SHA1()) 
   resp, content = client.request(url, method="GET",
    parameters=params)
-  return HttpResponse(content)
+  return HttpResponse(content, mimetype="application/json")
   
   #req = oauth.Request(method="GET", url=url, parameters=params)
   #signature_method = oauth.SignatureMethod_HMAC_SHA1()

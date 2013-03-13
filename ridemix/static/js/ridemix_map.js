@@ -44,7 +44,7 @@ function initialize_map() {
         navigator.geolocation.getCurrentPosition(function(position) {
             var pos = new google.maps.LatLng(position.coords.latitude,
                                              position.coords.longitude);
-            var image = 'static/media/minibug.jpg';
+            var image = 'http://static.ridemix.com/prod/media/minibug.jpg';
             marker = new google.maps.Marker({
                 map: map,
                 position: pos,
@@ -87,39 +87,59 @@ function handleNoGeolocation(errorFlag) {
 
 function update_results_list() { 
     url = 'get/places?location=';
-    url += marker.position.lat()+','+marker.position.lng();
+    var latitude = marker.position.lat();
+    var longitude = marker.position.lng();
+    var ll_string = latitude + "," + longitude;
+    url += ll_string;
     url += '&types=restaurant';
     $.getJSON(url, function(json_data) { 
         table = $("#loc_results");
 
+        var result_string = "<li data-role=\"list-divider\" role=\"heading\">Google Places</li>";
         json_data.results.forEach(function(place) {
-            name_col = document.createElement("td");
-            name_col.setAttribute("class", "col1");
-            cont=document.createTextNode(place.name);
-            name_col.appendChild(cont);
-
-            open_col = document.createElement("td");
-            open_col.setAttribute("class", "col2");
-            if (place.opening_hours != undefined) {
-                cont=document.createTextNode(place.opening_hours.open_now ? "Open":"Closed");
-            } else {
-                cont=document.createTextNode("No Info");
-            }
-            open_col.appendChild(cont);
+            result_string += "<li data-theme=\"c\">";
+            result_string += "<a href=\"#\" data-transition=\"slide\">"
+            result_string += "<div style=\"display:inline-block;\">" + place.name + "</div>"
             
-            dist_col = document.createElement("td");
-            dist_col.setAttribute("class", "col3");
-            cont=document.createTextNode("5.0 Miles");
-            dist_col.appendChild(cont);
-
-            row = document.createElement("tr");
-            row.appendChild(name_col);
-            row.appendChild(open_col);
-            row.appendChild(dist_col);
-
-            table.append(row);
+            var open_now;
+            if(place.opening_hours) open_now = place.opening_hours.open_now ? "Open": "Closed";
+            else open_now = "No Info";
+            result_string += "<div style=\"float:right;\">" + open_now +"</div><br />";
+            result_string += "<div style=\"float:right;\">5.0 Miles</div>";
+            result_string += "</a></li>";
         });
+        $("#places_list").append(result_string).listview('refresh');
     });
+
+    $.ajax({
+      url: '/yelp_query',
+      type: 'GET',
+      dataType: 'json',
+      data: {
+        latitude: latitude,
+        longitude: longitude,
+      },
+    }).done(function(data) {
+      var businesses = data['businesses']
+      var result_string = "<li data-role=\"list-divider\" role=\"heading\">Yelp Results</li>";
+      for(var i in businesses) {
+          var place = businesses[i];
+            result_string += "<li data-theme=\"c\">";
+            result_string += "<a href=\"#\" data-transition=\"slide\">"
+            result_string += "<div style=\"display:inline-block;\">" + place.name + "</div>"
+            
+            var open_now = place.is_closed?  "Closed" :"Open";
+            result_string += "<div style=\"float:right;\">" + open_now +"</div><br />";
+            result_string += "<div style=\"float:right;\">5.0 Miles</div>";
+            result_string += "</a></li>";
+        
+      }
+      $("#places_list").append(result_string).listview('refresh');
+    });
+}
+
+function success_fn(data) {
+  debugger;
 }
 
 function nav_callback(loc) {

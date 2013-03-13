@@ -7,14 +7,15 @@ var App = function() {
     var menuCard;
     var mapContainer;
     var friendContainer;
-    var listContainer;
+    window.listContainer;
     var mapHtml;
     var map;
     var marker;
     var view;
-
-    
-
+    window.places_arr;
+    window.places_data;
+    window.places_list;
+    window.footer;
 
     var init = function() {
 	mainContainer = new joContainer([
@@ -25,22 +26,28 @@ var App = function() {
 	deviceScreen = new joScreen(mainContainer);
 	mainNavBar.setStack(cardStack);
 
+  places_arr = ['List Elem 1', 'List Elem 2', 'List Elem 3'];
+  places_data = new joDataSource(window.places_arr);
+  places_list = new joMenu(window.places_data);
 
-
-	
-	
-	
+joDefer(function() {
+      var style = new joCSSRule('jostack > joscroller > *:last-child:after {content: ""; display: block; height: ' + (footer.container.offsetHeight) + 'px;}');
+    });
+	    navbar= new joOption([{title: "Map", id: "map"}, {title: "List", id:
+"list"}, {title:  "Friends", id: "friends"}]),
 
 	menuCard = new joCard([
 	    //mapContainer = new joContainer("<img id='places_map' src='https://maps.googleapis.com/maps/api/staticmap?center=Madison, WI&amp;zoom=14&amp;size=288x200&amp;markers=Madison, WI&amp;sensor=false' width='288' height='200' />"),
 	    mapContainer = new joContainer("<div id='map_canvas' style='height:300px;'></div>"), 
-	    listContainer = new joContainer("<div id='location_list' style='height:300px; display:none;'><table id='loc_results'></table></div>"),
+	    //listContainer = new joContainer("<div id='location_list' style='display:none;'><table id='loc_results'></table></div>"),
+	    listContainer = new joContainer(places_list),
 	    friendContainer = new joContainer("<div id='friend_list' style='height:300px; display:none;'></div>"),
-	    view = new joOption([{title: "Map", id: "map"}, {title: "List", id: "list"}, {title:  "Friends", id: "friends"}])
+      footer = new joFooter(navbar),
 	]);
 	
-	view.selectEvent.subscribe(function(id) {
-	    console.log(id);
+  ///listContainer.push(places_list);
+
+	navbar.selectEvent.subscribe(function(id) {
 	    switch(id) {
 	    case "map":
 		 $("#map_canvas").show();
@@ -136,9 +143,11 @@ function update_results_list() {
     url += '&types=restaurant';
     $.getJSON(url, function(json_data) { 
         table = $("#loc_results");
+        places_arr.length = 0;
 
         json_data.results.forEach(function(place) {
-            name_col = document.createElement("td");
+            places_arr.push(place.name);
+            /*name_col = document.createElement("td");
             name_col.setAttribute("class", "col1");
             cont=document.createTextNode(place.name);
             name_col.appendChild(cont);
@@ -162,8 +171,9 @@ function update_results_list() {
             row.appendChild(open_col);
             row.appendChild(dist_col);
 
-            table.append(row);
+            table.append(row);*/
         });
+        places_list.refresh();
     });
 }
 

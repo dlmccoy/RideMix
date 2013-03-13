@@ -17,20 +17,13 @@ function latlng_dist(destinations) {
 
 function dist_callback(response, status) {
     if (status == google.maps.DistanceMatrixStatus.OK) {
-    //var origins = response.originAddresses;
-    //var destinations = response.destinationAddresses;
 
     for (var i = 0; i < response.originAddresses.length; i++) {
       var results = response.rows[i].elements;
       for (var j = 0; j < results.length; j++) {
-        //var element = results[j];
         var distance = results[j].distance.text;
         $("#dist_"+j).html(distance);
         loc_results[j]["distance"] = distance;
-        //alert(distance);
-        //var duration = element.duration.text;
-        //var from = origins[i];
-        //var to = destinations[j];
       }
     }
     loc_results.sort(compare_loc_dist);
@@ -86,7 +79,6 @@ function ridemix_init() {
 }
 
 function initialize_map() {
-    //console.log(arg1);
     var mapOptions = {
         zoom: 16,
         mapTypeId: google.maps.MapTypeId.ROADMAP
@@ -145,9 +137,7 @@ function write_places_results_list() {
         result_string += "<div style=\"display:inline-block;\">" + place.name + "</div>";
 
         result_string += "<div style=\"float:right;\">" + place.open_now + "</div><br />";
-
         result_string += "<div style=\"float:right;\">" + place.distance + "</div>";
-
         result_string += "</a></li>";
     }
     $("#places_list").append(result_string).listview('refresh');
@@ -170,31 +160,21 @@ function update_results_list() {
             place_info = {};
 
             place_info["name"] = place.name;
-            //result_string += "<li data-theme=\"c\">";
-            //result_string += "<a href=\"#\" data-transition=\"slide\">";
-            //result_string += "<div style=\"display:inline-block;\">" + place.name + "</div>";
             
             var open_now;
             if(place.opening_hours) open_now = place.opening_hours.open_now ? "Open": "Closed";
             else open_now = "No Info";
-
             place_info["open_now"] = open_now;
 
-            //result_string += "<div style=\"float:right;\">" + open_now +"</div><br />";
-            //result_string += "<div style=\"float:right;\" id=\"dist_"+i+"\"></div>";
             var place_lat = place.geometry.location.lat;
             var place_lng = place.geometry.location.lng;
             place_info["location"] = new google.maps.LatLng(place_lat,place_lng);
             place_info["address"] = place.vicinity;
 
             dests.push(new google.maps.LatLng(place_lat,place_lng));
-            //result_string += "</a></li>";
             loc_results.push(place_info);
         }
-        //$("#places_list").append(result_string).listview('refresh');
         latlng_dist(dests);
-        //loc_results.sort(compare_loc_dist);
-        //write_places_results_list();
     });
 
     done.watch("p", function(id, oldval, newval) {

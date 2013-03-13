@@ -1,32 +1,89 @@
 $(function() {
+window.SELECTED_FRIENDS = [];
   window.friend_ajax = $.ajax({
     'url': '/get/friends',
     'datatype': 'text/json',
-  });
-
-  $("#friend_page").on('pagebeforecreate', function(event) {
-    $.mobile.loading("show", {
-      text: "Loading Friend List",
-      textVisible: true,
-      theme: "a",
-    });
-    window.friend_ajax.done(function(data) {
+  }).done(function(data) {
+      window.FRIEND_LIST = data;
       var container = $("#friend_add_list fieldset");
-
+      //var result_str = "";
+      debugger;
       for(var i in data) {
-        var id = "friend_" + i;
-        var checkbox = $("<input>");
-        checkbox.attr("type", "checkbox");
-        checkbox.attr("id", id);
-        var label = $("<label>");
-        label.attr("for", id);
-        label.text(data[i]);
-        container.append(checkbox);
-        container.append(label);
+        addToFriendList(i);
       }
-      container.trigger('create');
+      //container.html(result_str);
+     // try {
+        container.trigger('create');
+      //} catch(err) {
+      //  console.log("Error caught");
+      //} 
       $.mobile.loading("hide");
     });
 
-  });
+  //$("#friend_page").on('pagebeforeshow', function(event) {
+    //loadFriends();
+    //window.friend_ajax
+  //});
+
 });
+
+function addToSelected(id) {
+  var container = $("#selected_list");
+  var friend = window.FRIEND_LIST[id];
+  var html_id = id + "_selected";
+  var div = $("<div>");
+  div.attr('id', html_id + "_div");
+  var input = $("<input>");
+  input.attr('type', 'checkbox');
+  input.attr('id', html_id);
+  input.change(function(e) {
+    $("#" + e.target.id + "_div").remove();
+    var friend_id = parseInt(e.target.id); 
+    addToFriendList(friend_id);
+    $("#friend_add_list fieldset").trigger('create');
+    debugger;
+  });
+  var label = $("<label>");
+  label.attr('for', html_id);
+  label.text(friend);
+
+  
+  div.append(input);
+  div.append(label);
+
+  container.append(div);
+  container.trigger('create');
+  window.SELECTED_FRIENDS.push(id);
+}
+
+function addToFriendList(id) {
+  var friend = window.FRIEND_LIST[id];
+  var container = $("#friend_add_list fieldset");
+  var id =  id + "friend_";
+  var div = $("<div>");
+  div.attr('id', id + "_div");
+  var checkbox = $("<input>");
+  checkbox.change(function(e) {
+    $("#" + e.target.id + "_div").remove();
+    var friend_id = parseInt(e.target.id); 
+    addToSelected(friend_id);
+    debugger;
+  });
+  checkbox.attr("type", "checkbox");
+  checkbox.attr("id", id);
+  var label = $("<label>");
+  label.attr("for", id);
+  label.text(friend);
+  div.append(checkbox);
+  div.append(label);
+  container.append(div);
+}
+
+function loadFriends() {
+  console.log("Should show load screen now");
+  $.mobile.loading("show", {
+    text: "Loading Friend List",
+    textVisible: true,
+    theme: "a",
+  });
+}

@@ -63,3 +63,5 @@ def GetPlaces(request):
   result = simplejson.load(urllib.urlopen(url))
   return HttpResponse(json.dumps(result), mimetype="application/json")
 
+def Splash(request):
+  return render(request, 'splash.html')

@@ -29,6 +29,7 @@ urlpatterns = patterns('',
     url(r'^logout', 'home.views.LogOut'),
 
     url(r'^jo', 'home.views.Jo'),
+    url(r'^splash', 'home.views.Splash'),
 
     url(r'^get/friends', 'home.views.GetFriends'),
     url(r'^get/places', 'home.views.GetPlaces'),

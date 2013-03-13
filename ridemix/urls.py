@@ -9,12 +9,12 @@ urlpatterns = patterns('',
     url(r'^$', 'home.views.Splash'),
     url(r'^new_home', 'home.views.NewHome'),
     url(r'^privacy', 'home.views.Privacy'),
-    url(r'^recommendation_survey', 'survey.views.RecommendationSurvey'),
+    #url(r'^recommendation_survey', 'survey.views.RecommendationSurvey'),
     url(r'^yelpsearch', 'yelp.views.YelpHome'),
     url(r'^yelp_query', 'yelp.views.YelpQuery'),
     url(r'^yelpsearch', 'yelp.views.YelpQuery'),
-    url(r'^fbfriends', 'facebook.views.GetFacebookFriends'),
-    url(r'^fbfriends/(?P<friend_id>\d+)/$', 'facebook.views.GetFriendsCheckins'),
+    url(r'^fbfriends', 'facebookfriends.views.FacebookFriends'),
+    url(r'^fbfriends/(?P<friend_id>\d+)/$', 'facebookfriends.views.FacebookFriendsCheckins'),
 
 
     url(r'', include('social_auth.urls')),
@@ -29,9 +29,10 @@ urlpatterns = patterns('',
     url(r'^logout', 'home.views.LogOut'),
 
     url(r'^jo', 'home.views.Jo'),
+    #url(r'^get/friends', 'home.views.GetFriends'),
+    url(r'^get/friends', 'facebookfriends.views.FacebookFriends'),
     url(r'^splash', 'home.views.Splash'),
 
-    url(r'^get/friends', 'home.views.GetFriends'),
     url(r'^get/places', 'home.views.GetPlaces'),
     # url(r'^ridemix/', include('ridemix.foo.urls')),
 

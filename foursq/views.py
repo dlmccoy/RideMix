@@ -15,15 +15,17 @@ def FoursquareHome(request):
     return render(request, 'foursquare_query.html')
 
 def FoursquareQuery(request):
-    print("query")
     client = foursquare.Foursquare(client_id=settings.FOURSQUARE_ID, client_secret=settings.FOURSQUARE_SECRET)
 
-    location = request.GET.get('near')
     query = request.GET.get('query')
-            
+    latitude = request.GET.get('latitude')
+    longitude = request.GET.get('longitude')
+    
+    ll = latitude + ',' + longitude
+        
     object = client.venues.search(params={
                          'query': query,
-                         'near': location,
+                         'll': ll,
                          'limit': '20',
                          })
 

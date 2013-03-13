@@ -5,6 +5,7 @@ var yelp_results = [];
 var done = { p:1, y:1 };
 var all_results = {};
 var all_places = [];
+var foursquare_results = [];
 
 /* locs is an array containing all destinations you want to find the distance to*/
 function latlng_dist(destinations) {
@@ -195,10 +196,9 @@ function update_results_list() {
       },
     }).done(function(data) {
       yelp_results = data['businesses'];
-      var businesses = data['businesses']
       var result_string = "<li data-role=\"list-divider\" role=\"heading\">Yelp Results</li>";
-      for(var i in businesses) {
-          var place = businesses[i];
+      for(var i in yelp_results) {
+          var place = yelp_results[i];
             result_string += "<li data-theme=\"c\">";
             result_string += "<a href=\"#\" data-transition=\"slide\">"
             result_string += "<div style=\"display:inline-block;\">" + place.name + "</div>"
@@ -212,6 +212,30 @@ function update_results_list() {
       //$("#places_list").append(result_string).listview('refresh');
       console.log("Yelp done");
       done.y++;
+    });
+
+    $.ajax({
+        url: '/foursquare_query',
+        type: 'GET',
+        dataType: 'json',
+        data: {
+           latitude: latitude,
+           longitude: longitude,
+           query: 'restaurant'
+        },
+    }).done(function(data) {
+        foursquare_results = data['venues'];
+        var result_string = "<li data-role=\"list-divider\" role=\"heading\">Foursquare Results</li>";
+        for(var i in foursquare_results) {
+            var place = foursquare_results[i];
+            result_string += "<li data-theme=\"c\">";
+            result_string += "<a href=\"#\" data-transition=\"slide\">"
+            result_string += "<div style=\"display:inline-block;\">" + place.name + "</div>"
+            result_string += "<div style=\"float:right;\">" + "&nbsp;" +"</div><br />";
+            result_string += "<div style=\"float:right;\">" + "&nbsp;" + "</div>";
+            result_string += "</a></li>";
+        }
+        //$("#places_list").append(result_string).listview('refresh');
     });
 
     done.watch("y", function(id, oldval, newval) {

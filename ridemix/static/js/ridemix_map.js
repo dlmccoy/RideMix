@@ -1,7 +1,8 @@
 var map;
 var marker;
-var loc_results = []; //just google places right now
+var places_results = []; //just google places right now
 var done = { p:1 };
+var all_results = {};
 
 /* locs is an array containing all destinations you want to find the distance to*/
 function latlng_dist(destinations) {
@@ -23,10 +24,10 @@ function dist_callback(response, status) {
       for (var j = 0; j < results.length; j++) {
         var distance = results[j].distance.text;
         $("#dist_"+j).html(distance);
-        loc_results[j]["distance"] = distance;
+        places_results[j]["distance"] = distance;
       }
     }
-    loc_results.sort(compare_loc_dist);
+    places_results.sort(compare_loc_dist);
     done.p++;
   }
 }
@@ -130,8 +131,8 @@ function handleNoGeolocation(errorFlag) {
 
 function write_places_results_list() {
     var result_string = "<li data-role=\"list-divider\" role=\"heading\">Google Places</li>";
-    for (i=0;i<loc_results.length;i++) {
-        place = loc_results[i];
+    for (i=0;i<places_results.length;i++) {
+        place = places_results[i];
         result_string += "<li data-theme=\"c\">";
         result_string += "<a href=\"#\" data-transition=\"slide\">";
         result_string += "<div style=\"display:inline-block;\">" + place.name + "</div>";
@@ -151,7 +152,7 @@ function update_results_list() {
     url += ll_string;
     url += '&types=restaurant';
     $.getJSON(url, function(json_data) { 
-        table = $("#loc_results");
+        table = $("#places_results");
 
         var result_string = "<li data-role=\"list-divider\" role=\"heading\">Google Places</li>";
         var dests = [];
@@ -172,7 +173,7 @@ function update_results_list() {
             place_info["address"] = place.vicinity;
 
             dests.push(new google.maps.LatLng(place_lat,place_lng));
-            loc_results.push(place_info);
+            places_results.push(place_info);
         }
         latlng_dist(dests);
     });
@@ -206,7 +207,24 @@ function update_results_list() {
         
       }
       $("#places_list").append(result_string).listview('refresh');
+      done.p++;
     });
+
+    done.watch("p", function(id, oldval, newval) {
+        combine_results();
+        done.unwatch("p");
+    });
+
+}
+
+function combine_results() {
+    //all_results
+    var i = 0;
+    for(;i<places_results.length;i++) {
+        name = places_results[i]["name"];
+        all_results[name] = places_results[i];
+        all_results[name]["places_rank"] = i;
+    }
 }
 
 function success_fn(data) {

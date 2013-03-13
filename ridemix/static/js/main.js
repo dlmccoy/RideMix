@@ -20,12 +20,18 @@ $(function() {
         checkbox.attr("id", id);
         var label = $("<label>");
         label.attr("for", id);
-        label.text(data[i]);
+        label.text(data[i]["name"]);
         container.append(checkbox);
         container.append(label);
       }
-      container.trigger('create');
-      $.mobile.loading("hide");
+      try{
+	container.trigger('create');
+      } catch(err){
+	console.log("ERROR HERE");
+      }
+	$.mobile.loading("hide");
+    }, function(err) {
+      debugger;
     });
 
   });

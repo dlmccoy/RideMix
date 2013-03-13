@@ -5,11 +5,14 @@
 
 {% block content %}
 
+
+<div id="background-rings">
+  <img src="{{ STATIC_URL }}media/threeRingsWhite.png" style="width:95%; position:absolute; top:5%; left:3%"/>
+</div>
 <div id="logo">
-  <img src="{{ STATIC_URL }}media/logo.jpg" style="width:100%"/>
+  <img src="{{ STATIC_URL }}media/logo.png" style="width:100%"/>
 </div>
 <div class="button" id="hungry" onclick="window.location='new_home';">I'm hungry</div>
-<div class="button" id="sleepy" onclick="window.location='new_home';">I'm sleepy</div>
 <div class="button" id="bored"  onclick="window.location='new_home';">I'm bored</div>
 <div class="button" id="choosing" onclick="window.location='new_home';">I'm choosing</div>
 

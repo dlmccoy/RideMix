@@ -28,18 +28,20 @@ def YelpQuery(request):
 # deals_filter (bool)
   latitude = request.GET.get('latitude')
   longitude = request.GET.get('longitude')
-
+  term = request.GET.get('term')
+  sort = request.GET.get('sort')
   ll_string = latitude + "," + longitude
   
   url = 'http://api.yelp.com/v2/search'
-
   params = {
     'oauth_version': "1.0",
     'oauth_nonce': oauth.generate_nonce(),
     'oauth_timestamp': int(time.time()),
     #'oauth_consumer_key': '',
     'll': ll_string,
-    'term': 'food',
+    'term': term,
+    'limit': 20,
+    'sort': sort,
   }
 
   token = oauth.Token(key=settings.YELP_TOKEN, secret=settings.YELP_TOKEN_SECRET)

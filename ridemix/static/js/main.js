@@ -6,25 +6,13 @@ window.SELECTED_FRIENDS = [];
   }).done(function(data) {
       window.FRIEND_LIST = data;
       var container = $("#friend_add_list fieldset");
-      //var result_str = "";
       debugger;
       for(var i in data) {
         addToFriendList(i);
       }
-      //container.html(result_str);
-     // try {
         container.trigger('create');
-      //} catch(err) {
-      //  console.log("Error caught");
-      //} 
       $.mobile.loading("hide");
     });
-
-  //$("#friend_page").on('pagebeforeshow', function(event) {
-    //loadFriends();
-    //window.friend_ajax
-  //});
-
 });
 
 function addToSelected(id) {
@@ -45,7 +33,7 @@ function addToSelected(id) {
   });
   var label = $("<label>");
   label.attr('for', html_id);
-  label.text(friend);
+  label.text(friend['name']);
 
   
   div.append(input);
@@ -73,7 +61,7 @@ function addToFriendList(id) {
   checkbox.attr("id", id);
   var label = $("<label>");
   label.attr("for", id);
-  label.text(friend);
+  label.text(friend['name']);
   div.append(checkbox);
   div.append(label);
   container.append(div);

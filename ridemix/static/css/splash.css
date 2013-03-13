@@ -1,0 +1,48 @@
+@font-face {
+  font-family: VW;
+  src: url('http://static.ridemix.com/prod/fonts/volkswagen-bold.ttf') format("truetype");
+}
+
+.button {
+  border-radius: 8px;
+  font-family: VW;
+  font-size: 24pt;
+  background-color: #0431B4;
+  color: #FFFFFF;
+  border: none;
+  padding: 5px;
+  width: 40%;
+  text-align: center;
+  cursor: hand;
+}
+
+#hungry {
+  position: absolute;
+  top: 15%; 
+  left: 5%;
+}
+
+#sleepy {
+  position: absolute;
+  top: 65%;
+  left: 5%;
+}
+
+#bored {
+  position: absolute;
+  top: 15%;
+  left: 55%;
+}
+
+#choosing {
+  position: absolute;
+  top: 65%;
+  left: 55%;
+}
+
+#logo {
+  width: 90%;
+  position: absolute;
+  top: 30%;
+  left: 5%;
+}

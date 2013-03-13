@@ -1,5 +1,53 @@
 var map;
 var marker;
+var loc_results = []; //just google places right now
+var yelp_results = [];
+var foursquare_results = [];
+var done = { p:1 };
+
+/* locs is an array containing all destinations you want to find the distance to*/
+function latlng_dist(destinations) {
+    var service = new google.maps.DistanceMatrixService();
+
+    service.getDistanceMatrix({
+        origins: [marker.position],
+        destinations: destinations,
+        travelMode: google.maps.TravelMode.DRIVING,
+        unitSystem: google.maps.UnitSystem.IMPERIAL
+    }, dist_callback);
+}
+
+function dist_callback(response, status) {
+    if (status == google.maps.DistanceMatrixStatus.OK) {
+
+    for (var i = 0; i < response.originAddresses.length; i++) {
+      var results = response.rows[i].elements;
+      for (var j = 0; j < results.length; j++) {
+        var distance = results[j].distance.text;
+        $("#dist_"+j).html(distance);
+        loc_results[j]["distance"] = distance;
+      }
+    }
+    loc_results.sort(compare_loc_dist);
+    done.p++;
+  }
+}
+
+function compare_loc_dist(a,b) {
+    // compare ft vs. mi
+    a_ft = a.distance.search("ft") != -1;
+    b_ft = b.distance.search("ft") != -1;
+    if (a_ft && !b_ft) { return -1; }
+    if (!a_ft && b_ft) { return 1; }
+
+    // compare numeric distance (both now one of ft or mi)
+    a_num = parseFloat(a.distance);
+    b_num = parseFloat(b.distance);
+    if (a_num < b_num) { return -1; }
+    if (a_num > b_num) { return 1; }
+
+    return 0;
+}
 
 function ridemix_init() {
     $("#map_button").click(function(e) {
@@ -33,7 +81,6 @@ function ridemix_init() {
 }
 
 function initialize_map() {
-    //console.log(arg1);
     var mapOptions = {
         zoom: 16,
         mapTypeId: google.maps.MapTypeId.ROADMAP
@@ -70,7 +117,6 @@ function initialize_map() {
 function handleNoGeolocation(errorFlag) {
     if (errorFlag) {
         var content = 'Error: The Geolocation service failed.';
-    } else {
         var content = 'Error: Your browser doesn\'t support geolocation.';
     }
 
@@ -84,6 +130,20 @@ function handleNoGeolocation(errorFlag) {
     map.setCenter(options.position);
 }
 
+function write_places_results_list() {
+    var result_string = "<li data-role=\"list-divider\" role=\"heading\">Google Places</li>";
+    for (i=0;i<loc_results.length;i++) {
+        place = loc_results[i];
+        result_string += "<li data-theme=\"c\">";
+        result_string += "<a href=\"#\" data-transition=\"slide\">";
+        result_string += "<div style=\"display:inline-block;\">" + place.name + "</div>";
+
+        result_string += "<div style=\"float:right;\">" + place.open_now + "</div><br />";
+        result_string += "<div style=\"float:right;\">" + place.distance + "</div>";
+        result_string += "</a></li>";
+    }
+    $("#places_list").append(result_string).listview('refresh');
+}
 
 function update_results_list() { 
     url = 'get/places?location=';
@@ -96,19 +156,32 @@ function update_results_list() {
         table = $("#loc_results");
 
         var result_string = "<li data-role=\"list-divider\" role=\"heading\">Google Places</li>";
-        json_data.results.forEach(function(place) {
-            result_string += "<li data-theme=\"c\">";
-            result_string += "<a href=\"#\" data-transition=\"slide\">"
-            result_string += "<div style=\"display:inline-block;\">" + place.name + "</div>"
+        var dests = [];
+        for (i=0;i<json_data.results.length;i++) {
+            place = json_data.results[i];
+            place_info = {};
+
+            place_info["name"] = place.name;
             
             var open_now;
             if(place.opening_hours) open_now = place.opening_hours.open_now ? "Open": "Closed";
             else open_now = "No Info";
-            result_string += "<div style=\"float:right;\">" + open_now +"</div><br />";
-            result_string += "<div style=\"float:right;\">5.0 Miles</div>";
-            result_string += "</a></li>";
-        });
-        $("#places_list").append(result_string).listview('refresh');
+            place_info["open_now"] = open_now;
+
+            var place_lat = place.geometry.location.lat;
+            var place_lng = place.geometry.location.lng;
+            place_info["location"] = new google.maps.LatLng(place_lat,place_lng);
+            place_info["address"] = place.vicinity;
+
+            dests.push(new google.maps.LatLng(place_lat,place_lng));
+            loc_results.push(place_info);
+        }
+        latlng_dist(dests);
+    });
+
+    done.watch("p", function(id, oldval, newval) {
+        write_places_results_list();
+        done.unwatch("p");
     });
 
     $.ajax({
@@ -118,23 +191,49 @@ function update_results_list() {
       data: {
         latitude: latitude,
         longitude: longitude,
+        sort: 2,
+        term: 'restaurant'
       },
     }).done(function(data) {
-      var businesses = data['businesses']
+      yelp_results = data['businesses'];
       var result_string = "<li data-role=\"list-divider\" role=\"heading\">Yelp Results</li>";
-      for(var i in businesses) {
-          var place = businesses[i];
+      for(var i in yelp_results) {
+          var place = yelp_results[i];
             result_string += "<li data-theme=\"c\">";
             result_string += "<a href=\"#\" data-transition=\"slide\">"
             result_string += "<div style=\"display:inline-block;\">" + place.name + "</div>"
             
             var open_now = place.is_closed?  "Closed" :"Open";
             result_string += "<div style=\"float:right;\">" + open_now +"</div><br />";
-            result_string += "<div style=\"float:right;\">5.0 Miles</div>";
+            result_string += "<div style=\"float:right;\">" + place.rating + "</div>";
             result_string += "</a></li>";
         
       }
       $("#places_list").append(result_string).listview('refresh');
+    });
+    
+    $.ajax({
+        url: '/foursquare_query',
+        type: 'GET',
+        dataType: 'json',
+        data: {
+           latitude: latitude,
+           longitude: longitude,
+           query: 'restaurant'
+        },
+    }).done(function(data) {
+        foursquare_results = data['venues'];
+        var result_string = "<li data-role=\"list-divider\" role=\"heading\">Foursquare Results</li>";
+        for(var i in foursquare_results) {
+            var place = foursquare_results[i];
+            result_string += "<li data-theme=\"c\">";
+            result_string += "<a href=\"#\" data-transition=\"slide\">"
+            result_string += "<div style=\"display:inline-block;\">" + place.name + "</div>"
+            result_string += "<div style=\"float:right;\">" + "&nbsp;" +"</div><br />";
+            result_string += "<div style=\"float:right;\">" + "&nbsp;" + "</div>";
+            result_string += "</a></li>";
+        }
+        $("#places_list").append(result_string).listview('refresh');
     });
 }
 
@@ -146,4 +245,61 @@ function nav_callback(loc) {
     console.log(loc);
     var pos = new google.maps.LatLng(loc.coords.latitude, loc.coords.longitude);
     marker.setPosition(pos);
+    map.setCenter(marker.position);
 }
+
+/*
+ * object.watch polyfill
+ *
+ * 2012-04-03
+ *
+ * By Eli Grey, http://eligrey.com
+ * Public Domain.
+ * NO WARRANTY EXPRESSED OR IMPLIED. USE AT YOUR OWN RISK.
+ */
+
+// object.watch
+if (!Object.prototype.watch) {
+    Object.defineProperty(Object.prototype, "watch", {
+          enumerable: false
+        , configurable: true
+        , writable: false
+        , value: function (prop, handler) {
+            var
+              oldval = this[prop]
+            , newval = oldval
+            , getter = function () {
+                return newval;
+            }
+            , setter = function (val) {
+                oldval = newval;
+                return newval = handler.call(this, prop, oldval, val);
+            }
+            ;
+            
+            if (delete this[prop]) { // can't watch constants
+                Object.defineProperty(this, prop, {
+                      get: getter
+                    , set: setter
+                    , enumerable: true
+                    , configurable: true
+                });
+            }
+        }
+    });
+}
+
+// object.unwatch
+if (!Object.prototype.unwatch) {
+    Object.defineProperty(Object.prototype, "unwatch", {
+          enumerable: false
+        , configurable: true
+        , writable: false
+        , value: function (prop) {
+            var val = this[prop];
+            delete this[prop]; // remove accessors
+            this[prop] = val;
+        }
+    });
+}
+/* End Object Watch Code */

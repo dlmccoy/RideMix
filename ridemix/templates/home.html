@@ -1,8 +1,6 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>RideMix</h1>
-<div>Home of the RideMix social driving application!</div>
-
-<div><a href="/login/facebook">Log In with Facebook</a></div>
+<img src="{{ STATIC_URL }}media/logo.png" alt="RideMix Logo" style = "width: 100%;">
+<div><a href="/login/facebook"><img src="{{ STATIC_URL }}media/login-button.png" alt="Login with Facebook" style = "width: 35%;"></a></div>
 {% endblock %}

@@ -233,10 +233,27 @@ RideMix.prototype.write_search_results = function() {
 	console.log("write_search_results called");
     var result_string = "<li data-role=\"list-divider\" role=\"heading\">Combined Results</li>";
     for (i=0;i<this.search_results.length;i++) {
+        var randNumber = Math.floor(Math.random()*6);
+        var rand2 = Math.floor(Math.random()*21);
+        debugger;
         place = this.search_results[i];
         result_string += "<li data-theme=\"c\">";
         result_string += "<a href=\"#\" data-transition=\"slide\">";
-        result_string += "<div style=\"display:inline-block;\">" + place.name + "</div>";
+        result_string += "<div style=\"display:block;\">" + place.name + "</div>";
+
+        // Begin random friend stats 
+        if (randNumber == 2)
+          result_string += "<div class=\"friends_insert\">" + rand2 + " of your friends like this!</div>";
+        else if (randNumber == 3) {
+          var selected_size = window.SELECTED_FRIENDS.length;
+          if (selected_size != 0) {
+            var rand_friend = Math.floor(Math.random()*selected_size);
+             var friend_name = window.FRIEND_LIST[rand_friend]['name']
+             result_string += "<div class=\"friend_insert\">" + friend_name + " likes this!</div>";
+          }
+          
+        }
+        // End random friend stats
         
         /*if (place.open_now) {
             result_string += "<div style=\"float:right;\">" + place.open_now + "</div><br />";
@@ -248,7 +265,7 @@ RideMix.prototype.write_search_results = function() {
         
         result_string += "</a></li>";
     }
-    $("#"+this.results_div_id).append(result_string).listview('refresh');
+    $("#"+this.results_div_id).html(result_string).listview('refresh');
 }
 
 RideMix.prototype.ridemix_compare = function(a,b) {
@@ -609,3 +626,9 @@ function nav_callback(loc) {
     marker.setPosition(pos);
     map.setCenter(marker.position);
 } */
+
+$(function() {
+  $("#location_page").on('pagebeforeshow', function(e) {
+    r.write_search_results();
+  });
+});

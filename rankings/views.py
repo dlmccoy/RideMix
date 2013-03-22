@@ -41,13 +41,12 @@ def Rankings(request):
     if len(closest) > 0 and not closest[0].is_valid():
         closest.delete()
 
-    results = GooglePlaces.objects.filter(lat__lte=lat+0.02,lat__gte=lat-0.02, lng__lte=lng+0.02, lng__gte=lng-0.02)
+    results = GooglePlaces.objects.filter(lat__lte=lat+0.02,lat__gte=lat-0.02, lng__lte=lng+0.02, lng__gte=lng-0.02) #[:20]
 
     json_data = []
     for obj in results:
         json_data.append(obj.get_dic())
     return HttpResponse(json.dumps(json_data), mimetype="application/json")
-    #close_places = GooglePlaces.objects.filter(lat__lte=22,lat__gte=25,lng__lte=-122,lng__gte='')
 
 def insert_place_if(places, place):
     """

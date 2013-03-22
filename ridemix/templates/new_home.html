@@ -20,11 +20,11 @@
         <script 
           src="{{ STATIC_URL }}js/main.js">
         </script>
-        <script type="text/javascript" src="{{ STATIC_URL }}js/ridemix_map.js"></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}js/ridemix.js"></script>
         <script>
           $(function() {
-          	//r = new RideMix('map_canvas','places_list','');
-          	//r.init();
+          	r = new RideMix('map_canvas','places_list','');
+          	r.init();
             //ridemix_init();
           });
         </script>

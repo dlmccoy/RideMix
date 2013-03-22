@@ -6,7 +6,6 @@ window.SELECTED_FRIENDS = [];
   }).done(function(data) {
       window.FRIEND_LIST = data;
       var container = $("#friend_add_list fieldset");
-      debugger;
       for(var i in data) {
         addToFriendList(i);
       }
@@ -29,7 +28,6 @@ function addToSelected(id) {
     var friend_id = parseInt(e.target.id); 
     addToFriendList(friend_id);
     $("#friend_add_list fieldset").trigger('create');
-    debugger;
   });
   var label = $("<label>");
   label.attr('for', html_id);
@@ -55,7 +53,6 @@ function addToFriendList(id) {
     $("#" + e.target.id + "_div").remove();
     var friend_id = parseInt(e.target.id); 
     addToSelected(friend_id);
-    debugger;
   });
   checkbox.attr("type", "checkbox");
   checkbox.attr("id", id);

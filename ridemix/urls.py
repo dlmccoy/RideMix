@@ -34,7 +34,7 @@ urlpatterns = patterns('',
     url(r'^splash', 'home.views.Splash'),
 
     url(r'^get/places', 'home.views.GetPlaces'),
-    # url(r'^ridemix/', include('ridemix.foo.urls')),
+    url(r'^get/rankings', 'rankings.views.Rankings'),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),

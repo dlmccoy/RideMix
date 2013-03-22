@@ -211,7 +211,6 @@ RideMix.prototype.calc_latlng_dists = function() {
 RideMix.prototype.dist_callback = function(response, status) {
 	console.log("dist_callback called");
 	if (status == google.maps.DistanceMatrixStatus.OK) {
-		//debugger;
     	for (var i = 0; i < response.originAddresses.length; i++) {
       		var results = response.rows[i].elements;
       		for (var j = 0; j < results.length; j++) {
@@ -235,7 +234,6 @@ RideMix.prototype.write_search_results = function() {
     for (i=0;i<this.search_results.length;i++) {
         var randNumber = Math.floor(Math.random()*6);
         var rand2 = Math.floor(Math.random()*21);
-        debugger;
         place = this.search_results[i];
         result_string += "<li data-theme=\"c\">";
         result_string += "<a href=\"#\" data-transition=\"slide\">";

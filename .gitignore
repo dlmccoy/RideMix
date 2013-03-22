@@ -3,3 +3,5 @@ ridemix/settings.py
 ridemix/wsgi.py
 *.swp
 *.DS_Store
+*~
+*#

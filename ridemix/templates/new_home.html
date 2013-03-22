@@ -23,7 +23,9 @@
         <script type="text/javascript" src="{{ STATIC_URL }}js/ridemix_map.js"></script>
         <script>
           $(function() {
-            ridemix_init();
+          	//r = new RideMix('map_canvas','places_list','');
+          	//r.init();
+            //ridemix_init();
           });
         </script>
     </head>
@@ -60,6 +62,7 @@
                 </div>
             </div>
         </div>
+        <!-- Search Results -->
         <div data-role="page" id="location_page">
             <div data-theme="a" data-role="header">
                 <h3>
@@ -91,7 +94,8 @@
                     </ul>
                 </div>
             </div>
-         </div>
+        </div>
+        <!-- Facebook Friends -->
         <div data-role="page" id="friend_page">
             <div data-theme="a" data-role="header">
                 <h3>

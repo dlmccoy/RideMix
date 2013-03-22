@@ -38,10 +38,16 @@ class GooglePlaces(models.Model):
         toReturn['lng'] = self.lng
         toReturn['name'] = self.name
         toReturn['icon'] = self.icon
-        toReturn['rating'] = self.rating
-        toReturn['address'] = self.address
-        toReturn['phone'] = self.phone
-        toReturn['open_hours'] = self.open_hours
-        toReturn['close_hours'] = self.close_hours
-        toReturn['website'] = self.website
+        if (self.rating):
+            toReturn['gp_rating'] = self.rating
+        if (self.address):
+            toReturn['address'] = self.address
+        if (self.phone):
+            toReturn['phone'] = self.phone
+        if (self.open_hours):
+            toReturn['open_hours'] = self.open_hours
+        if (self.close_hours):
+            toReturn['close_hours'] = self.close_hours
+        if (self.website):
+            toReturn['website'] = self.website
         return toReturn

@@ -26,12 +26,49 @@ def FacebookFriends(request):
       args=["Mike", "Dillon", "Alejandro", "Victoria"]
       return HttpResponse(json.dumps(args), mimetype="application/json")
 
-def FacebookFriendsCheckins(request, friend_id):
-  user = facebook.get_user_from_cookie(request.COOKIES, settings.FACEBOOK_APP_ID, settings.FACEBOOK_API_SECRET)
-  if(user):
-    graph = facebook.GraphApi(user["access_token"])
-    friend = graph.get_object(friend_id)
-    user_profile = graph.get_object("me")
-    checkins = graph.get_connections(friend_id, "checkins")
-    context = {'checkins': checkins, 'user':friend['name']}
-    return render(request, 'fb_checkins.html', context)
+@login_required(redirect_field_name="login/facebook")
+def FacebookFriendsCheckins(request):
+    myUser = request.user
+    instance = UserSocialAuth.objects.filter(provider='facebook').filter(user=myUser)
+    tokens = [x.tokens for x in instance]
+    token = tokens[0]["access_token"]
+    if(token):
+        graph = facebook.GraphAPI(token)
+        friends = graph.get_connections("me", "friends")["data"]
+        user_profile = graph.get_object("me")
+	checkinList = []
+	for i in range(0, 5):
+	    checkins = graph.get_connections("friends", "checkins")["data"]
+            for checkIn in checkins:
+                checkinList.append(checkIn)
+	return HttpResponse(json.dumps(checkinList), mimetype="application/json")
+
+def FacebookUsersGroups(request):
+    myUser = request.user
+    instance = UserSocialAuth.objects.filter(provider='facebook').filter(user=myUser)
+    tokens = [x.tokens for x in instance]
+    token = tokens[0]["access_token"]
+    if(token):
+        graph = facebook.GraphAPI(token)
+	user_groups = graph.get_connections("me", "groups")["data"]
+        return HttpResponse(json.dumps(user_groups), mimetype="application/json")
+
+def FacebookUserLikes(request): 
+    myUser = request.user
+    instance = UserSocialAuth.objects.filter(provider='facebook').filter(user=myUser)
+    tokens = [x.tokens for x in instance]
+    token = tokens[0]["access_token"]
+    if(token):
+        graph = facebook.GraphAPI(token)
+        user_likes = graph.get_connections("me", "likes")["data"]
+        return HttpResponse(json.dumps(user_likes), mimetype="application/json")
+
+def ParseLocations(possibleLocations, locations):
+    result = []
+    for location in locations:
+	if(location["name"] in possibleLocations["name"]):
+	    result.append(location)
+    return result
+
+
+

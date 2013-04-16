@@ -1,18 +1,22 @@
 $(function() {
-window.SELECTED_FRIENDS = [];
+  window.SELECTED_FRIENDS = [];
   window.friend_ajax = $.ajax({
     'url': '/get/friends',
     'datatype': 'text/json',
   }).done(function(data) {
       window.FRIEND_LIST = data;
-      var container = $("#friend_add_list fieldset");
-      debugger;
+      var container = $("#friend_add_list").controlgroup("container");
       for(var i in data) {
-        addToFriendList(i);
+        addToFriendList(container, i);
       }
         container.trigger('create');
       $.mobile.loading("hide");
     });
+
+  $("#friend_add_select").live('change', function() {
+    //debugger;
+    cool = 5;
+  });
 });
 
 function addToSelected(id) {
@@ -27,9 +31,9 @@ function addToSelected(id) {
   input.change(function(e) {
     $("#" + e.target.id + "_div").remove();
     var friend_id = parseInt(e.target.id); 
-    addToFriendList(friend_id);
-    $("#friend_add_list fieldset").trigger('create');
-    debugger;
+    var friend_div_name = "#" + friend_id + "_friend_div";
+    $(friend_div_name).show();
+    //$("#friend_add_list fieldset").trigger('refresh');
   });
   var label = $("<label>");
   label.attr('for', html_id);
@@ -44,27 +48,21 @@ function addToSelected(id) {
   window.SELECTED_FRIENDS.push(id);
 }
 
-function addToFriendList(id) {
+function addToFriendList(container, id) {
   var friend = window.FRIEND_LIST[id];
-  var container = $("#friend_add_list fieldset");
-  var id =  id + "friend_";
-  var div = $("<div>");
-  div.attr('id', id + "_div");
-  var checkbox = $("<input>");
-  checkbox.change(function(e) {
-    $("#" + e.target.id + "_div").remove();
-    var friend_id = parseInt(e.target.id); 
+  var id =  id + "_friend";
+  var anchor = $("<a>");
+  anchor.attr('id', id + "_div");
+  anchor.attr('data-role', 'button');
+  anchor.click(function(e) {
+    var this_id = e.currentTarget.id;
+    $("#" + this_id).hide();
+    var friend_id = parseInt(this_id); 
     addToSelected(friend_id);
-    debugger;
+    return false;
   });
-  checkbox.attr("type", "checkbox");
-  checkbox.attr("id", id);
-  var label = $("<label>");
-  label.attr("for", id);
-  label.text(friend['name']);
-  div.append(checkbox);
-  div.append(label);
-  container.append(div);
+  anchor.text(friend['name']);
+  container.append(anchor);
 }
 
 function loadFriends() {

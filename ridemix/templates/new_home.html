@@ -9,6 +9,8 @@
         </title>
         <link rel="stylesheet"
           href="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.css" />
+        <link rel="stylesheet"
+          href="{{ STATIC_URL}}css/ridemix.css" />
         <script src="http://code.jquery.com/jquery-1.7.2.min.js">
         </script>
         <script 
@@ -18,13 +20,13 @@
           src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCwZMghR10qu_E1hvmt4UGo_ZCurDTuwAc&sensor=true">
         </script>
         <script 
-          src="{{ STATIC_URL }}js/main.js">
+          src="{{ STATIC_URL }}js/friends.js">
         </script>
-        <script type="text/javascript" src="{{ STATIC_URL }}js/ridemix_map.js"></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}js/ridemix.js"></script>
         <script>
           $(function() {
-          	//r = new RideMix('map_canvas','places_list','');
-          	//r.init();
+          	r = new RideMix('map_canvas','places_list','');
+          	r.init();
             //ridemix_init();
           });
         </script>
@@ -70,8 +72,10 @@
                 </h3>
             </div>
             <div data-role="content">
-                <ul id="places_list" data-role="listview" data-divider-theme="b" data-inset="true">
-                </ul>
+                <!--<ul id="places_list" data-role="listview"
+data-divider-theme="b" data-inset="true">-->
+                <div id="places_list" data-role="collapsible_set">
+                </div>
             </div>
             <div data-theme="a" data-role="footer" data-id"myFooter" data-position="fixed">
                 <div id="navbar2" data-role="navbar" data-iconpos="top">

@@ -186,10 +186,16 @@ RideMix.prototype.update_results_list = function() {
 
 RideMix.prototype.calc_latlng_dists = function() {
 	console.log("calc_latlng_dists called");
+
+  // Cut results off at 25 because that's the max for google maps distance
+  // calculations
+  r.search_results = r.search_results.slice(0,25);
+
 	var destinations = new Array();
 	for (i=0; i < r.search_results.length; i++) {
 		destinations.push(new google.maps.LatLng(this.search_results[i].lat, this.search_results[i].lng));
 	}
+  console.log(destinations);
 
 	var service = new google.maps.DistanceMatrixService();
 
@@ -205,7 +211,6 @@ RideMix.prototype.calc_latlng_dists = function() {
 RideMix.prototype.dist_callback = function(response, status) {
 	console.log("dist_callback called");
 	if (status == google.maps.DistanceMatrixStatus.OK) {
-		//debugger;
     	for (var i = 0; i < response.originAddresses.length; i++) {
       		var results = response.rows[i].elements;
       		for (var j = 0; j < results.length; j++) {
@@ -225,12 +230,38 @@ RideMix.prototype.dist_callback = function(response, status) {
 
 RideMix.prototype.write_search_results = function() {
 	console.log("write_search_results called");
-    var result_string = "<li data-role=\"list-divider\" role=\"heading\">Combined Results</li>";
+    //var result_string = "<li data-role=\"list-divider\" role=\"heading\">Combined Results</li>";
+    //var result_string = "<div data-role=\"collapsible\">";
+    var result_string = "";  
+    //result_string += "<h3>Combined Results</h3></div>";
     for (i=0;i<this.search_results.length;i++) {
+        var randNumber = Math.floor(Math.random()*6);
+        var rand2 = Math.floor(Math.random()*21);
         place = this.search_results[i];
-        result_string += "<li data-theme=\"c\">";
-        result_string += "<a href=\"#\" data-transition=\"slide\">";
-        result_string += "<div style=\"display:inline-block;\">" + place.name + "</div>";
+        console.log(place);
+
+        result_string += "<div data-role=\"collapsible\">";
+        result_string += "<h3>" + place.name + " (" + place.distance + ")</h3>";
+        result_string += "<p><a href=\"http://maps.google.com?q=stanford\">Link</a>";
+        if(place.gp_rating)
+          result_string += "<br />Google Rating: " + place.gp_rating;
+        if(place.phone)
+          result_string += "<br /><a href=\"tel://" + place.phone + "\">Phone</a>";
+        result_string += "</p></div>";
+
+        // Begin random friend stats 
+        //if (randNumber == 2)
+        //  result_string += "<div class=\"friends_insert\">" + rand2 + " of your friends like this!</div>";
+        //else if (randNumber == 3) {
+        //  var selected_size = window.SELECTED_FRIENDS.length;
+        //  if (selected_size != 0) {
+        //    var rand_friend = Math.floor(Math.random()*selected_size);
+        //     var friend_name = window.FRIEND_LIST[rand_friend]['name']
+        //     result_string += "<div class=\"friend_insert\">" + friend_name + " likes this!</div>";
+        //  }
+          
+        //}
+        // End random friend stats
         
         /*if (place.open_now) {
             result_string += "<div style=\"float:right;\">" + place.open_now + "</div><br />";
@@ -238,11 +269,13 @@ RideMix.prototype.write_search_results = function() {
             open_now = place.is_closed ? "Closed" : "Open";
             result_string += "<div style=\"float:right;\">" + open_now + "</div><br />";
         }*/
-        result_string += "<div style=\"float:right;\">" + place.distance + "</div>";
+        //result_string += "<div style=\"float:right;\">" + place.distance + "</div>";
         
-        result_string += "</a></li>";
+        //result_string += "</a></li>";
     }
-    $("#"+this.results_div_id).append(result_string).listview('refresh');
+    //$("#"+this.results_div_id).html(result_string).listview('refresh');
+    //$("#"+this.results_div_id).html(result_string).collapsibleset('refresh');
+    $("#"+this.results_div_id).html(result_string).collapsibleset();
 }
 
 RideMix.prototype.ridemix_compare = function(a,b) {
@@ -603,3 +636,9 @@ function nav_callback(loc) {
     marker.setPosition(pos);
     map.setCenter(marker.position);
 } */
+
+$(function() {
+  $("#location_page").on('pagebeforeshow', function(e) {
+    r.write_search_results();
+  });
+});

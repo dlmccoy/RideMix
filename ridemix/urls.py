@@ -15,7 +15,7 @@ urlpatterns = patterns('',
     url(r'^yelpsearch', 'yelp.views.YelpQuery'),
     url(r'^fbfriends', 'facebookfriends.views.FacebookFriends'),
     url(r'^fbcheckins', 'facebookfriends.views.FacebookFriendsCheckins'),
-
+    url(r'^fbstatus', 'facebookfriends.views.FacebookStatusByLikes'),
 
     url(r'', include('social_auth.urls')),
     url(r'^logout', 'home.views.LogOut'),

@@ -58,7 +58,6 @@ class places:
     def parseHours(periods):
         # parse out two arrays of open and close times from periods
         # array of google JSON
-        print periods
         times = {'open':['-1']*7, 'close':['-1']*7}
 
         for day in periods:

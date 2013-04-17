@@ -39,7 +39,7 @@ def Rankings(request):
         new_search_loc = PlacesAccess(lat=lat, lng=lng)
         new_search_loc.save()
     if len(closest) > 0 and not closest[0].is_valid():
-        closest.delete()
+        closest[0].delete()
 
     results = GooglePlaces.objects.filter(lat__lte=lat+0.02,lat__gte=lat-0.02, lng__lte=lng+0.02, lng__gte=lng-0.02) #[:20]
 
@@ -68,16 +68,19 @@ def insert_place_if(places, place):
             obj.rating = place['rating']
 
         place_details = places.details(obj.reference)
-        #TODO check error code!!
-        obj.address = place_details['result']['formatted_address']
-        if 'formatted_phone_number' in place_details['result'].keys():
-            obj.phone = place_details['result']['formatted_phone_number']
-        if 'opening_hours' in place_details['result'].keys():
-            hours = places.parseHours(place_details['result']['opening_hours']['periods'])
-            obj.open_hours = ','.join(hours['open'])
-            obj.close_hours = ','.join(hours['close'])
-        if 'website' in place_details['result'].keys():
-            obj.website = place_details['result']['website']
+        if place_details['status'] == 'OK':
+            obj.address = place_details['result']['formatted_address']
+            if 'formatted_phone_number' in place_details['result'].keys():
+                obj.phone = place_details['result']['formatted_phone_number']
+            if 'opening_hours' in place_details['result'].keys():
+                hours = places.parseHours(place_details['result']['opening_hours']['periods'])
+                obj.open_hours = ','.join(hours['open'])
+                obj.close_hours = ','.join(hours['close'])
+            if 'website' in place_details['result'].keys():
+                obj.website = place_details['result']['website']
+        else:
+            print 'reference: ', obj.reference
+            print 'status: ', place_details['status']
 
         obj.save()
     

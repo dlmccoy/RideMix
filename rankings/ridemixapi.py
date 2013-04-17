@@ -1,5 +1,8 @@
-import simplejson
+import simplejson as json
 import urllib
+import foursquare
+import time
+import oauth2 as oauth
 
 class places:
     PLACES_SEARCH_URL = 'https://maps.googleapis.com/maps/api/place/nearbysearch/'
@@ -20,7 +23,7 @@ class places:
         pl_args.update({'location':location})
 
         url = self.PLACES_SEARCH_URL + '?' + urllib.urlencode(pl_args)
-        result = simplejson.load(urllib.urlopen(url))
+        result = json.load(urllib.urlopen(url))
         #set pagetoken
         if 'next_page_token' in result.keys():
             self.pagetoken = result['next_page_token']
@@ -33,7 +36,7 @@ class places:
             pl_args = {'sensor':sensor, 'pagetoken':self.pagetoken, 'key':self.key}
 
             url = self.PLACES_SEARCH_URL + '?' + urllib.urlencode(pl_args)
-            result = simplejson.load(urllib.urlopen(url))
+            result = json.load(urllib.urlopen(url))
             #set pagetoken
             if 'next_page_token' in result.keys():
                 self.pagetoken = result['next_page_token']
@@ -47,7 +50,7 @@ class places:
         pl_args = {'sensor':sensor, 'reference':reference, 'key':self.key}
 
         url = self.PLACES_DETAIL_URL + '?' + urllib.urlencode(pl_args)
-        result = simplejson.load(urllib.urlopen(url))
+        result = json.load(urllib.urlopen(url))
 
         return result
 
@@ -67,3 +70,63 @@ class places:
                 times['open'][index] = day['open']['time']
                 times['close'][index] = day['close']['time']
         return times
+
+class Foursquare:
+    client_id=None
+    client_secret=None
+
+    def __init__(self, client_id, client_secret):
+        self.client_id = client_id
+        self.client_secret = client_secret
+
+    def search(self, location, query, limit='20'):
+        client = foursquare.Foursquare(self.client_id, self.client_secret)
+        object = client.venues.search(params={
+            'query': query,
+            'll': location,
+            'limit': limit,
+        })
+        return object
+
+class Yelp:
+    YELP_SEARCH_URL = 'http://api.yelp.com/v2/search' 
+
+    token = None
+    token_secret = None
+    consumer_key = None
+    consumer_secret = None
+
+    def __init__(self, token, token_secret, consumer_key, consumer_secret):
+        self.token = token
+        self.token_secret = token_secret
+        self.consumer_key = consumer_key
+        self.consumer_secret = consumer_secret
+
+    def search(self, location, term, sort='1', limit=20):
+        if int(limit) > 20 :
+            limit = 20
+        if int(sort) not in [0,1,2]:
+            sort = '1'
+
+        params = {
+            'oauth_version': '1.0',
+            'oauth_nonce': oauth.generate_nonce(),
+            'oauth_timestamp': int(time.time()),
+            #'oauth_consumer_key': '',
+            'll': location,
+            'term': term,
+            'limit': int(limit), 
+            'sort': sort
+        }
+        token = oauth.Token(key=self.token, secret=self.token_secret)
+        consumer = oauth.Consumer(key=self.consumer_key, secret=self.consumer_secret)
+
+        params['oauth_token'] = token.key
+        params['oauth_consumer_key'] = consumer.key
+
+        client = oauth.Client(consumer, token)
+        client.set_signature_method(oauth.SignatureMethod_HMAC_SHA1())
+        resp, content = client.request(self.YELP_SEARCH_URL, method="GET",
+            parameters=params)
+
+        return json.loads(content)

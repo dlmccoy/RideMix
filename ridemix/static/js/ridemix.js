@@ -132,9 +132,7 @@ RideMix.prototype.update_results_list = function() {
 RideMix.prototype.calc_latlng_dists = function() {
 	console.log("calc_latlng_dists called");
 
-    // Cut results off at 25 because that's the max for google maps distance
-    // calculations
-    r.search_results = r.search_results.slice(0,25);
+    // sliced in backend now
 
 	var destinations = new Array();
 	for (i=0; i < r.search_results.length; i++) {

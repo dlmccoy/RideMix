@@ -6,6 +6,8 @@ from django.shortcuts import redirect, render, render_to_response
 from django.conf import settings
 
 from rankings.models import PlacesAccess, GooglePlaces
+from rankings.models import YelpAccess, Yelp
+from rankings.models import FoursquareAccess, Foursquare
 
 from rankings import ridemixapi
 
@@ -17,14 +19,21 @@ def Rankings(request):
     lat = float(lat)
     lng = float(lng)
 
-    places = ridemixapi.places(settings.GOOGLE_API_KEY)
+    places = ridemixapi.Places(settings.GOOGLE_API_KEY)
+    yelp = ridemixapi.Yelp(settings.YELP_TOKEN, settings.YELP_TOKEN_SECRET, settings.YELP_CONSUMER_KEY, settings.YELP_CONSUMER_SECRET)
+    foursquare = ridemixapi.Foursquare(settings.FOURSQUARE_ID, settings.FOURSQUARE_SECRET)
 
     # Note, this is not very accurate, or correct, but we're testing in close area's...
     order_by_str = 'abs('+str(lat)+'-lat)+abs('+str(lng)+'-lng)'
-    closest = PlacesAccess.objects.all().extra(select={'diff': order_by_str}).order_by('diff')[:1]
+    places_closest = PlacesAccess.objects.all().extra(select={'diff': order_by_str}).order_by('diff')[:1]
+    yelp_closest = YelpAccess.objects.all().extra(select={'diff': order_by_str}).order_by('diff')[:1]
+    foursquare_closest = FoursquareAccess.objects.all().extra(select={'diff': order_by_str}).order_by('diff')[:1]
 
     # Search if we haven't run search within 100m or point is expired
-    if len(closest) == 0 or distance.distance(Point(location), Point(closest[0].lat, closest[0].lng)).kilometers > 0.1 or not closest[0].is_valid():
+    if len(places_closest) == 0 or distance.distance(Point(location), Point(places_closest[0].lat, places_closest[0].lng)).kilometers > 0.1 or not places_closest[0].is_valid():
+        if len(places_closest) != 0 and not places_closest[0].is_valid():
+            places_closest[0].delete()
+
         search_results = places.search(location)
         #TODO check error code!!
         while True:
@@ -38,14 +47,48 @@ def Rankings(request):
 
         new_search_loc = PlacesAccess(lat=lat, lng=lng)
         new_search_loc.save()
-    if len(closest) > 0 and not closest[0].is_valid():
-        closest[0].delete()
 
-    results = GooglePlaces.objects.filter(lat__lte=lat+0.02,lat__gte=lat-0.02, lng__lte=lng+0.02, lng__gte=lng-0.02) #[:20]
+    if len(yelp_closest) == 0 or distance.distance(Point(location), Point(yelp_closest[0].lat, yelp_closest[0].lng)).kilometers > 0.1 or not yelp_closest[0].is_valid():
+        if len(yelp_closest) != 0 and not yelp_closest[0].is_valid():
+            yelp_closest[0].delete()
+
+        search_results = yelp.search(location)
+        for business in search_results['businesses']:
+            insert_business_if(yelp, business)
+
+        search_results = yelp.search(location, offset=20)
+        for business in search_results['businesses']:
+            insert_business_if(yelp, business)
+
+        new_search_loc = YelpAccess(lat=lat, lng=lng)
+        new_search_loc.save()
+
+    if len(foursquare_closest) == 0 or distance.distance(Point(location), Point(foursquare_closest[0].lat, foursquare_closest[0].lng)).kilometers > 0.1 or not foursquare_closest[0].is_valid():
+        if len(foursquare_closest) != 0 and not foursquare_closest[0].is_valid():
+            foursquare_closest[0].delete()
+
+        search_results = foursquare.search(location, limit=50)
+        for venue in search_results['venues']:
+            insert_venue_if(foursquare, venue)
+
+        new_search_loc = FoursquareAccess(lat=lat, lng=lng)
+        new_search_loc.save()
+
+    results = GooglePlaces.objects.all().extra(select={'diff': order_by_str}).order_by('diff')[:25]
 
     json_data = []
     for obj in results:
-        json_data.append(obj.get_dic())
+        dic = obj.get_dic()
+
+        yelp_obj = Yelp.objects.filter(name=obj.name)
+        if len(yelp_obj) != 0:
+            dic.update(yelp_obj[0].get_dic())
+
+        foursquare_obj = Foursquare.objects.filter(name=obj.name)
+        if len(foursquare_obj) != 0:
+            dic.update(foursquare_obj[0].get_dic())
+
+        json_data.append(dic)
     return HttpResponse(json.dumps(json_data), mimetype="application/json")
 
 def insert_place_if(places, place):
@@ -55,7 +98,6 @@ def insert_place_if(places, place):
     places: a ridemixapi.places object
     place: place object from serch result
     """
-    #print place
     obj, created = GooglePlaces.objects.get_or_create(gp_id=place['id'])
     if created or (not created and not obj.is_valid()):
         #update or insert new values
@@ -84,3 +126,40 @@ def insert_place_if(places, place):
 
         obj.save()
     
+def insert_business_if(yelp, business):
+    """
+    Inserts a business into the DB if it does not exist or if it is old data
+
+    yelp: a ridemixapi.yelp object
+    business: business object from search result
+    """
+    obj, created = Yelp.objects.get_or_create(y_id=business['id'])
+    if created or (not created and not obj.is_valid()):
+        #update or insert new values
+        obj.lat = business['location']['coordinate']['latitude']
+        obj.lng = business['location']['coordinate']['longitude']
+        obj.name = business['name']
+        obj.review_count = business['review_count']
+        obj.rating = business['rating']
+
+        obj.save()
+    
+def insert_venue_if(foursquare, venue):
+    """
+    Inserts a venue into the DB if it does not exist or if it is old data
+
+    foursquare: a ridemixapi.foursquare object
+    venue: venue object from a search result
+    """
+    obj, created = Foursquare.objects.get_or_create(f_id=venue['id'])
+    if created or (not created and not obj.is_valid()):
+        #update or insert new values
+        obj.lat = venue['location']['lat']
+        obj.lng = venue['location']['lng']
+        obj.name = venue['name']
+        obj.likes = venue['likes']['count']
+        obj.tip_count = venue['stats']['tipCount']
+        obj.checkin_count = venue['stats']['checkinsCount']
+        obj.users_count = venue['stats']['usersCount']
+
+        obj.save()

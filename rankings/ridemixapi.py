@@ -4,7 +4,7 @@ import foursquare
 import time
 import oauth2 as oauth
 
-class places:
+class Places:
     PLACES_SEARCH_URL = 'https://maps.googleapis.com/maps/api/place/nearbysearch/'
     PLACES_DETAIL_URL = 'https://maps.googleapis.com/maps/api/place/details/'
 
@@ -78,12 +78,16 @@ class Foursquare:
         self.client_id = client_id
         self.client_secret = client_secret
 
-    def search(self, location, query, limit='20'):
+    def search(self, location, **args):
+        if not args.has_key('query'):
+            args['query'] = 'restaurant'
+        if not args.has_key('limit'):
+            args['limit'] = '20'
         client = foursquare.Foursquare(self.client_id, self.client_secret)
         object = client.venues.search(params={
-            'query': query,
+            'query': args['query'],
             'll': location,
-            'limit': limit,
+            'limit': args['limit'],
         })
         return object
 
@@ -101,11 +105,13 @@ class Yelp:
         self.consumer_key = consumer_key
         self.consumer_secret = consumer_secret
 
-    def search(self, location, term, sort='1', limit=20):
-        if int(limit) > 20 :
-            limit = 20
-        if int(sort) not in [0,1,2]:
-            sort = '1'
+    def search(self, location, **args): # term='restaurant', sort='1', limit=20):
+        if not args.has_key('term'):
+            args['term'] = 'restaurant'
+        if not args.has_key('limit') or int(args['limit']) > 20 :
+            args['limit'] = 20
+        if not args.has_key('sort') or int(args['sort']) not in [0,1,2]:
+            args['sort'] = '1'
 
         params = {
             'oauth_version': '1.0',
@@ -113,10 +119,14 @@ class Yelp:
             'oauth_timestamp': int(time.time()),
             #'oauth_consumer_key': '',
             'll': location,
-            'term': term,
-            'limit': int(limit), 
-            'sort': sort
+            'term': args['term'],
+            'limit': args['limit'], 
+            'sort': args['sort']
         }
+
+        if args.has_key('offset'):
+            params['offset'] = args['offset']
+
         token = oauth.Token(key=self.token, secret=self.token_secret)
         consumer = oauth.Consumer(key=self.consumer_key, secret=self.consumer_secret)
 

@@ -6,9 +6,12 @@ import string
 import simplejson, urllib
 
 from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import redirect, render, render_to_response
 from django.conf import settings
+
+from ridemix.util import json_response
 
 def NewHome(request):
   return render(request, 'new_home.html')
@@ -23,12 +26,16 @@ def LogOut(request):
 def Jo(request):
   return render(request, 'jo.html')
 
+@login_required
+@json_response
 def GetFriends(request):
   args = []
   for i in range(500):
     args.append(''.join(random.choice(string.lowercase) for j in range(10))) 
-  return HttpResponse(json.dumps(args), mimetype="application/json")
+  return args
 
+@login_required
+@json_response
 def GetPlaces(request):
   PLACES_BASE_URL = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json'
   pl_args = {'sensor':'true','key':settings.GOOGLE_API_KEY,'rankby':'distance'}
@@ -39,7 +46,7 @@ def GetPlaces(request):
   url = PLACES_BASE_URL + '?' + urllib.urlencode(pl_args)
 
   result = simplejson.load(urllib.urlopen(url))
-  return HttpResponse(json.dumps(result), mimetype="application/json")
+  return result
 
 def Splash(request):
   if request.user.is_authenticated():

@@ -24,18 +24,15 @@ urlpatterns = patterns('',
     url(r'^foursquare_query', 'foursq.views.FoursquareQuery'),
     url(r'^foursquare', 'foursq.views.FoursquareHome'),
 
-
-    url(r'', include('social_auth.urls')),
-    url(r'^logout', 'home.views.LogOut'),
-
     url(r'^jo', 'home.views.Jo'),
-    #url(r'^get/friends', 'home.views.GetFriends'),
-    url(r'^get/friends', 'facebookfriends.views.FacebookFriends'),
     url(r'^splash', 'home.views.Splash'),
 
+    url(r'^get/friends', 'facebookfriends.views.FacebookFriends'),
     url(r'^get/places', 'home.views.GetPlaces'),
     url(r'^get/rankings', 'rankings.views.Rankings'),
-    url(r'^get/trending', 'foursq.views.Trending'),
+    url(r'^get/trending', 'rankings.views.GetTrending'),
+
+    url(r'^rate_place/', 'rankings.views.RatePlace'),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),

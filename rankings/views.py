@@ -1,6 +1,8 @@
 from geopy import distance, Point
 import json
 
+from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
 from django.shortcuts import redirect, render, render_to_response
 from django.conf import settings
@@ -8,9 +10,18 @@ from django.conf import settings
 from rankings.models import PlacesAccess, GooglePlaces
 from rankings.models import YelpAccess, Yelp
 from rankings.models import FoursquareAccess, Foursquare
+from rankings.models import UserRating
 
 from rankings import ridemixapi
+from ridemix.util import json_response
 
+###############################################################################
+#                               View Functions                                #
+###############################################################################
+
+# Retrieves a json list of places based on the user's location
+@login_required
+@json_response
 def Rankings(request):
     location = request.GET.__getitem__('location')
     types = request.GET.__getitem__('types')
@@ -78,18 +89,91 @@ def Rankings(request):
 
     json_data = []
     for obj in results:
-        dic = obj.get_dic()
+        dic = combine_all_information(obj)
+        json_data.append(dic)
 
+    return json_data
+
+# Function to send a place rating as users click to up or downvote a venue
+@login_required
+@json_response
+def RatePlace(request):
+    fail = False
+
+    place_id = request.GET.get('place_id')
+    user_rating = request.GET.get('user_rating')
+
+    # Check that all values were provided
+    if not place_id or not user_rating:
+        return fail 
+
+    # Check that all ratings are in the target rating range
+    user_rating = int(user_rating)
+    if user_rating < -5 or user_rating > 5:
+        return fail 
+
+    # Make sure that a place with the given place_id exists
+    try:
+      google_place = GooglePlaces.objects.get(gp_id=place_id)
+    except ObjectDoesNotExist:
+      return fail 
+    
+    # Add the rating for this place 
+    google_place.user_rating += user_rating;
+    google_place.save()
+
+    new_rating = UserRating()
+    new_rating.place = google_place
+    new_rating.user = request.user
+    new_rating.rating = user_rating
+    new_rating.save()
+
+    return True 
+
+@login_required
+@json_response
+def GetTrending(request):
+  location = request.GET.get('location')
+
+  places = GooglePlaces.objects.all().order_by('-user_rating')[:25]
+
+  result = []
+  for place in places:
+    result.append(place.get_dic())
+
+  return result
+ 
+
+###############################################################################
+#                             Helper Functions                                #
+###############################################################################
+
+# Uses the connected foursquare or yelp objects to add info to the place
+# information
+def combine_all_information(obj):
+    dic = obj.get_dic()
+
+    # Retrieves yelp info
+    if obj.yelp:
+        dic.update(obj.yelp.get_dic())
+    else:
         yelp_obj = Yelp.objects.filter(name=obj.name)
         if len(yelp_obj) != 0:
+            obj.yelp = yelp_obj[0]
+            obj.save()
             dic.update(yelp_obj[0].get_dic())
-
+            
+    # Retrieves foursquare info
+    if obj.foursquare:
+        dic.update(obj.foursquare.get_dic())
+    else:
         foursquare_obj = Foursquare.objects.filter(name=obj.name)
         if len(foursquare_obj) != 0:
+            obj.foursquare = foursquare_obj[0]
+            obj.save()
             dic.update(foursquare_obj[0].get_dic())
 
-        json_data.append(dic)
-    return HttpResponse(json.dumps(json_data), mimetype="application/json")
+    return dic
 
 def insert_place_if(places, place):
     """

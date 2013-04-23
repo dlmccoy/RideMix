@@ -157,7 +157,10 @@ RideMix.prototype.dist_callback = function(response, status) {
     	for (var i = 0; i < response.originAddresses.length; i++) {
       		var results = response.rows[i].elements;
       		for (var j = 0; j < results.length; j++) {
-        		var distance = results[j].distance.text;
+            var distance;
+            if(results[j].distance)
+              distance = results[j].distance.text;
+            else distance = "0ft";
         		this.search_results[j]["distance"] = distance;
       		}
     	}

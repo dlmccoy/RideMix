@@ -1,8 +1,9 @@
 import datetime
 
-from django.utils import timezone
 from django.conf import settings
+from django.contrib.auth.models import User
 from django.db import models
+from django.utils import timezone
 
 class PlacesAccess(models.Model):
     lat = models.FloatField()
@@ -111,3 +112,16 @@ class Foursquare(models.Model):
         toReturn['yelp_checkin_count'] = self.checkin_count
         toReturn['yelp_users_count'] = self.users_count
         return toReturn
+
+class Venue(models.Model):
+    #facebook = Facebook(null=True)
+    google = GooglePlaces()
+    yelp = Yelp()
+    foursquare = Foursquare()
+    added = models.DateTimeField(auto_now_add=True)
+
+class Rating(models.Model):
+    user = User()
+    venue = Venue()
+    rating = models.IntegerField() 
+    added = models.DateTimeField(auto_now_add=True)

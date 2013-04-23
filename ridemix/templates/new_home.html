@@ -23,13 +23,6 @@
           src="{{ STATIC_URL }}js/friends.js">
         </script>
         <script type="text/javascript" src="{{ STATIC_URL }}js/ridemix.js"></script>
-        <script>
-          $(function() {
-          	r = new RideMix('map_canvas','places_list','');
-          	r.init();
-            //ridemix_init();
-          });
-        </script>
     </head>
     <body>
         <!-- Home -->
@@ -72,8 +65,12 @@
                 </h3>
             </div>
             <div data-role="content">
-                <!--<ul id="places_list" data-role="listview"
-data-divider-theme="b" data-inset="true">-->
+                <div id="trending_nav" data-role="navbar">
+                    <ul>
+                        <li><a href="#" id="general_places_button">General</a></li>
+                        <li><a href="#" id="trending_now_button">Trending Now</a></li>
+                    </ul>
+                </div>
                 <div id="places_list" data-role="collapsible_set">
                 </div>
             </div>

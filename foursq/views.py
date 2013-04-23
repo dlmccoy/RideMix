@@ -31,3 +31,15 @@ def FoursquareQuery(request):
 
     return HttpResponse(json.dumps(object))
     
+def Trending(request):
+    location = request.GET.get('location')
+
+    client = foursquare.Foursquare(client_id=settings.FOURSQUARE_ID, client_secret=settings.FOURSQUARE_SECRET)
+    result = client.venues.trending(params={
+                         'll': location,
+                         'limit': '20',
+                         'radius': 2000,
+                         })
+
+    return HttpResponse(json.dumps(result))
+

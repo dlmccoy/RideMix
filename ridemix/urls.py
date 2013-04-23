@@ -35,6 +35,7 @@ urlpatterns = patterns('',
 
     url(r'^get/places', 'home.views.GetPlaces'),
     url(r'^get/rankings', 'rankings.views.Rankings'),
+    url(r'^get/trending', 'foursq.views.Trending'),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),

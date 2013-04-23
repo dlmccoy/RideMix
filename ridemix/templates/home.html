@@ -1,6 +1,20 @@
 {% extends "base.html" %}
-
+{% block header_addons %}
+<style type="text/css">
+  body {
+    background-color: #333399;
+  }
+  #facebookloginbutton {
+    -moz-box-shadow: 0.5px 0.5px 1px 1.5px grey;
+    -webkit-box-shadow: 0.5px 0.5px 1px 1.5px grey;
+    box-shadow: 0.5px 0.5px 1px 1.5px grey;
+    position: absolute;
+    top: 45%;
+    left: 32.5%;
+  }
+</style>
+{% endblock %}
 {% block content %}
-<img src="{{ STATIC_URL }}media/logo.png" alt="RideMix Logo" style = "width: 100%;">
-<div><a href="/login/facebook"><img src="{{ STATIC_URL }}media/login-button.png" alt="Login with Facebook" style = "width: 35%;"></a></div>
+<img src="{{ STATIC_URL }}media/logoBlackShadow.png" alt="RideMix Logo" style = "width: 80%;position: absolute; left: 10%; top: 25%;">
+<div><a href="/login/facebook"><img id="facebookloginbutton" src="{{ STATIC_URL }}media/login-button.png" alt="Login with Facebook" style = "width: 35%;"></a></div>
 {% endblock %}

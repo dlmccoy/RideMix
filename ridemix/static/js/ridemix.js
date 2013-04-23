@@ -254,6 +254,9 @@ RideMix.prototype.ridemix_compare = function(a,b) {
 }
 
 $(function() {
+  r = new RideMix('map_canvas','places_list','');
+  r.init();
+
   $("#location_page").on('pagebeforeshow', function(e) {
     r.write_search_results();
   });

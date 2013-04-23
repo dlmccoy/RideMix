@@ -121,37 +121,44 @@ RideMix.prototype.update_results_list = function() {
     console.log(url);
     
     var obj = this;
-    $.getJSON(url, function(json_data) {
+    var regular_request = $.getJSON(url, function(json_data) {
     	obj.search_results = json_data;
-        obj.calc_latlng_dists();
+      obj.calc_latlng_dists(obj.search_results);
         //obj.combine_results(); // should be obj.sort results
         //obj.write_places_results_list();
     });
+
+    url = "/get/trending?location=" + ll_string
+    var trending_request = $.getJSON(url, function(json_data) {
+      obj.trending_results = json_data;
+      obj.calc_latlng_dists(obj.trending_results);
+    });
+
 }
 
-RideMix.prototype.calc_latlng_dists = function() {
+RideMix.prototype.calc_latlng_dists = function(results_list) {
 	console.log("calc_latlng_dists called");
 
     // sliced in backend now
 
 	var destinations = new Array();
-	for (i=0; i < r.search_results.length; i++) {
-		destinations.push(new google.maps.LatLng(this.search_results[i].lat, this.search_results[i].lng));
+	for (i=0; i < results_list.length; i++) {
+		destinations.push(new google.maps.LatLng(results_list[i].lat, results_list[i].lng));
 	}
     console.log(destinations);
 
 	var service = new google.maps.DistanceMatrixService();
 
 	var obj = this;
-    service.getDistanceMatrix({
-        origins: [this.cur_loc_marker.position],
-        destinations: destinations,
-        travelMode: google.maps.TravelMode.DRIVING,	//TODO user choice
-        unitSystem: google.maps.UnitSystem.IMPERIAL	//TODO user choice
-    }, function(response, status) { obj.dist_callback(response, status); });
+  service.getDistanceMatrix({
+      origins: [this.cur_loc_marker.position],
+      destinations: destinations,
+      travelMode: google.maps.TravelMode.DRIVING,	//TODO user choice
+      unitSystem: google.maps.UnitSystem.IMPERIAL	//TODO user choice
+  }, function(response, status) { obj.dist_callback(response, status, results_list); });
 }
 
-RideMix.prototype.dist_callback = function(response, status) {
+RideMix.prototype.dist_callback = function(response, status, results_list) {
 	console.log("dist_callback called");
 	if (status == google.maps.DistanceMatrixStatus.OK) {
     	for (var i = 0; i < response.originAddresses.length; i++) {
@@ -161,11 +168,11 @@ RideMix.prototype.dist_callback = function(response, status) {
             if(results[j].distance)
               distance = results[j].distance.text;
             else distance = "0ft";
-        		this.search_results[j]["distance"] = distance;
+        		results_list[j]["distance"] = distance;
       		}
     	}
     	var obj = this;
-    	this.search_results.sort(function(a,b) {
+    	results_list.sort(function(a,b) {
     		return obj.ridemix_compare(a,b);
     	});
     	this.write_search_results()
@@ -174,16 +181,24 @@ RideMix.prototype.dist_callback = function(response, status) {
 	}
 }
 
+RideMix.prototype.write_trending_results = function() {
+  this.write_results(this.trending_results);
+};
+
 RideMix.prototype.write_search_results = function() {
+  this.write_results(this.search_results);
+};
+
+RideMix.prototype.write_results = function(results_list) {
 	console.log("write_search_results called");
     //var result_string = "<li data-role=\"list-divider\" role=\"heading\">Combined Results</li>";
     //var result_string = "<div data-role=\"collapsible\">";
     var result_string = "";  
     //result_string += "<h3>Combined Results</h3></div>";
-    for (i=0;i<this.search_results.length;i++) {
+    for (i=0;i<results_list.length;i++) {
         var randNumber = Math.floor(Math.random()*6);
         var rand2 = Math.floor(Math.random()*21);
-        place = this.search_results[i];
+        place = results_list[i];
         console.log(place);
 
         result_string += "<div data-role=\"collapsible\">";
@@ -193,6 +208,7 @@ RideMix.prototype.write_search_results = function() {
           result_string += "<br />Google Rating: " + place.gp_rating;
         if(place.phone)
           result_string += "<br /><a href=\"tel://" + place.phone + "\">Phone</a>";
+        result_string += "<br /><button onclick=\"submit_rating('"+place.id+ "',5)\" >+1</button>";
         result_string += "</p></div>";
 
         //Begin random friend stats 
@@ -256,11 +272,29 @@ RideMix.prototype.ridemix_compare = function(a,b) {
 	else { return 0; }
 }
 
+function submit_rating(id, rating) {
+  var args = {
+    'place_id': id,
+    'user_rating': rating,
+  }
+  
+ $.ajax({
+    'url': '/rate_place',
+    'data': args,
+  });
+}
+
 $(function() {
   r = new RideMix('map_canvas','places_list','');
   r.init();
 
   $("#location_page").on('pagebeforeshow', function(e) {
+    r.write_search_results();
+  });
+  $("#trending_now_button").click(function() {
+    r.write_trending_results();
+  });
+  $("#general_places_button").click(function() {
     r.write_search_results();
   });
 });

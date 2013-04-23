@@ -1,24 +1,20 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Facebook Checkins for {{user}}</title>
+    <title>Facebook Checkins for Mike</title>
 </head>
 <body>
 <h1>Facebook Friends</h1>
-<p>This page should display a list of {{user}}'s facebook checkins. While this will not inevitably be displayed
+<p>This page should display a list of Mike's facebook checkins. While this will not inevitably be displayed
 on its own, this information is vital to our aggregation algorithm and should be tested!</p>
 {% if checkins %}
     <ul>
     {% for checkin in checkins %}
-        <li>From: {{checkin["from"]}}</li>
-        <li>Place: {{checkin["place"]}}</li>
-        <li>Time: {{checkin["created_time"]}}</li>
-        <li>Time: {{checkin["message"]}}</li>
-        <li>Time: {{checkin["likes"]}}</li>
-    <% endfor %>
+        <li>{{checkin}}</li>
+    {% endfor %}
     </ul>
-<% else %>
+{% else %}
     <p>No checkins available at this time.</p>
-<% endif %>
+{% endif %}
 </body>
 </html>

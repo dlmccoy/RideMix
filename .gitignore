@@ -5,3 +5,4 @@ ridemix/wsgi.py
 *.DS_Store
 *~
 *#
+*.db

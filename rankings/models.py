@@ -57,7 +57,7 @@ class GooglePlaces(models.Model):
         return toReturn
 
 class YelpAccess(models.Model):
-    lat = models.FloatField()
+    lat = models.FloatField() #where accessed from
     lng = models.FloatField()
     access_date = models.DateTimeField(auto_now_add=True)
 
@@ -70,6 +70,7 @@ class Yelp(models.Model):
     lng = models.FloatField(null=True)
     pull_date = models.DateTimeField(auto_now_add=True)
     name = models.CharField(max_length=200, null=True)
+    phone = models.CharField(max_length=200, null=True)
     review_count = models.IntegerField(null=True)
     rating = models.FloatField(null=True)
 
@@ -87,7 +88,7 @@ class Yelp(models.Model):
         return toReturn
 
 class FoursquareAccess(models.Model):
-    lat = models.FloatField()
+    lat = models.FloatField() #where accessed from
     lng = models.FloatField()
     access_date = models.DateTimeField(auto_now_add=True)
 
@@ -99,7 +100,8 @@ class Foursquare(models.Model):
     lat = models.FloatField(null=True)
     lng = models.FloatField(null=True)
     pull_date = models.DateTimeField(auto_now_add=True)
-    name = models.CharField(max_length=200,null=True,unique=True)
+    name = models.CharField(max_length=200,null=True)
+    phone = models.CharField(max_length=200, null=True)
     likes = models.IntegerField(null=True) # ['likes']['count']
     tip_count = models.IntegerField(null=True) # ['stats']['tipCount']
     checkin_count = models.IntegerField(null=True) # ['stats']['checkinsCount']

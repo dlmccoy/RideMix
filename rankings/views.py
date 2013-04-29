@@ -58,6 +58,7 @@ def Rankings(request):
 
         new_search_loc = PlacesAccess(lat=lat, lng=lng)
         new_search_loc.save()
+    print "Done with Google Places search"
 
     if len(yelp_closest) == 0 or distance.distance(Point(location), Point(yelp_closest[0].lat, yelp_closest[0].lng)).kilometers > 0.1 or not yelp_closest[0].is_valid():
         if len(yelp_closest) != 0 and not yelp_closest[0].is_valid():
@@ -73,6 +74,7 @@ def Rankings(request):
 
         new_search_loc = YelpAccess(lat=lat, lng=lng)
         new_search_loc.save()
+    print "Done with Yelp search"
 
     if len(foursquare_closest) == 0 or distance.distance(Point(location), Point(foursquare_closest[0].lat, foursquare_closest[0].lng)).kilometers > 0.1 or not foursquare_closest[0].is_valid():
         if len(foursquare_closest) != 0 and not foursquare_closest[0].is_valid():
@@ -84,6 +86,7 @@ def Rankings(request):
 
         new_search_loc = FoursquareAccess(lat=lat, lng=lng)
         new_search_loc.save()
+    print "Done with Foursquare search"
 
     results = GooglePlaces.objects.all().extra(select={'diff': order_by_str}).order_by('diff')[:25]
 
@@ -193,20 +196,20 @@ def insert_place_if(places, place):
         if 'rating' in place.keys():
             obj.rating = place['rating']
 
-        place_details = places.details(obj.reference)
-        if place_details['status'] == 'OK':
-            obj.address = place_details['result']['formatted_address']
-            if 'formatted_phone_number' in place_details['result'].keys():
-                obj.phone = place_details['result']['formatted_phone_number']
-            if 'opening_hours' in place_details['result'].keys():
-                hours = places.parseHours(place_details['result']['opening_hours']['periods'])
-                obj.open_hours = ','.join(hours['open'])
-                obj.close_hours = ','.join(hours['close'])
-            if 'website' in place_details['result'].keys():
-                obj.website = place_details['result']['website']
-        else:
-            print 'reference: ', obj.reference
-            print 'status: ', place_details['status']
+        #place_details = places.details(obj.reference)
+        #if place_details['status'] == 'OK':
+        #    obj.address = place_details['result']['formatted_address']
+        #    if 'formatted_phone_number' in place_details['result'].keys():
+        #        obj.phone = place_details['result']['formatted_phone_number']
+        #    if 'opening_hours' in place_details['result'].keys():
+        #        hours = places.parseHours(place_details['result']['opening_hours']['periods'])
+        #        obj.open_hours = ','.join(hours['open'])
+        #        obj.close_hours = ','.join(hours['close'])
+        #    if 'website' in place_details['result'].keys():
+        #        obj.website = place_details['result']['website']
+        #else:
+        #    print 'reference: ', obj.reference
+        #    print 'status: ', place_details['status']
 
         obj.save()
     
@@ -217,6 +220,7 @@ def insert_business_if(yelp, business):
     yelp: a ridemixapi.yelp object
     business: business object from search result
     """
+    #re.sub(r'\D', '', phone)
     obj, created = Yelp.objects.get_or_create(y_id=business['id'])
     if created or (not created and not obj.is_valid()):
         #update or insert new values
@@ -225,6 +229,8 @@ def insert_business_if(yelp, business):
         obj.name = business['name']
         obj.review_count = business['review_count']
         obj.rating = business['rating']
+        if 'phone' in business.keys():
+            obj.phone = business['phone']
 
         obj.save()
     
@@ -245,5 +251,7 @@ def insert_venue_if(foursquare, venue):
         obj.tip_count = venue['stats']['tipCount']
         obj.checkin_count = venue['stats']['checkinsCount']
         obj.users_count = venue['stats']['usersCount']
+        if 'phone' in venue.keys():
+            obj.phone = venue['contact']['phone']
 
         obj.save()

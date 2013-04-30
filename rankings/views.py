@@ -192,7 +192,7 @@ def insert_place_if(places, place):
         obj.lng = place['geometry']['location']['lng']
         obj.name = place['name']
         obj.icon = place['icon']
-        obj.reference = place['reference']
+        obj.reference = place['reference'] or ""
         if 'rating' in place.keys():
             obj.rating = place['rating']
 

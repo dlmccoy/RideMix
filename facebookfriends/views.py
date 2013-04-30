@@ -39,11 +39,23 @@ def FacebookFriendsCheckins(request):
     if(token):
         graph = facebook.GraphAPI(token)
         PLACE_TYPE = "RESTAURANT/CAFE"
-	queries = {"q1":"select author_uid, coords, target_id, message, timestamp from checkin WHERE author_uid in(SELECT uid2 FROM friend WHERE uid1 = me() limit 200) ORDER BY timestamp",
+	queries = {"q1":"select author_uid, coords, target_id, message, timestamp, checkin_id from checkin WHERE author_uid in(SELECT uid2 FROM friend WHERE uid1 = me() limit 200) limit 200 ORDER BY timestamp",
 "q2":"select page_id, type, description, talking_about_count, were_here_count from page where type='RESTAURANT/CAFE' and page_id in (select target_id from #q1)",
 "q3":"select uid, first_name, last_name from user where uid in (select author_uid from #q1)"}
-        data = graph.fql(queries)
-	return HttpResponse(json.dumps(data), mimetype="application/json")
+        graph_data = graph.fql(queries)
+        query_set1 = graph_data[0]["fql_result_set"]
+        rankings = Counter()
+        url = 'http://text-processing.com/api/sentiment/'
+        for row in query_set1:
+           values = {'text':row["message"].encode('utf-8')}
+           data = urllib.urlencode(values)
+           response = urllib2.urlopen(url, data)
+           content = response.read()
+           json_content = json.loads(content)
+           prob = data["probability"]
+           score = prob["pos"] - prob["neg"]
+           rankings.update({row["checkin_id"]:score})
+	return HttpResponse(json.dumps(rankings), mimetype="application/json")
 
 
 @login_required(redirect_field_name="login/facebook")

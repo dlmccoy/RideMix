@@ -16,6 +16,8 @@ urlpatterns = patterns('',
     url(r'^fbfriends', 'facebookfriends.views.FacebookFriends'),
     url(r'^fbcheckins', 'facebookfriends.views.FacebookFriendsCheckins'),
     url(r'^fbstatus', 'facebookfriends.views.FacebookStatusByLikes'),
+    url(r'^fblikes', 'facebookfriends.views.FacebookUserLikes'),
+    url(r'^fbfriendlikes', 'facebookfriends.views.FacebookLikesByUser'),
 
     url(r'', include('social_auth.urls')),
     url(r'^logout', 'home.views.LogOut'),

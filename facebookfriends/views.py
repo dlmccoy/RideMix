@@ -92,6 +92,18 @@ def FacebookUserLikes(request):
         user_likes = graph.get_connections("me", "likes")["data"]
         return HttpResponse(json.dumps(user_likes), mimetype="application/json")
 
+def FacebookLikesByUser(request):
+    myUser = request.user
+    instance = UserSocialAuth.objects.filter(provider='facebook').filter(user=myUser)
+    tokens = [x.tokens for x in instance]
+    token = tokens[0]["access_token"]
+    userID = request.GET.get('userID', '')
+    if (token) and (len(userID) > 0):
+         graph = facebook.GraphAPI(token)
+         query = "select hometown_location, music, books, tv, games, sports, favorite_athletes, favorite_teams, inspirational_people from user where uid = " + userID
+         data = graph.fql(query)
+         return HttpResponse(json.dumps(data), mimetype="application/json") 
+
 def ParseLocations(possibleLocations, locations):
     result = []
     for location in locations:

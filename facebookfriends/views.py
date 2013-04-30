@@ -1,5 +1,6 @@
 import facebook
 import json
+import random
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
@@ -92,17 +93,31 @@ def FacebookUserLikes(request):
         user_likes = graph.get_connections("me", "likes")["data"]
         return HttpResponse(json.dumps(user_likes), mimetype="application/json")
 
-def FacebookLikesByUser(request):
+def FacebookLikesByUser(request, userID=''):
     myUser = request.user
     instance = UserSocialAuth.objects.filter(provider='facebook').filter(user=myUser)
     tokens = [x.tokens for x in instance]
     token = tokens[0]["access_token"]
-    userID = request.GET.get('userID', '')
+    if (len(userID) == 0) userID = request.GET.get('userID', '')
     if (token) and (len(userID) > 0):
          graph = facebook.GraphAPI(token)
-         query = "select hometown_location, music, books, tv, games, sports, favorite_athletes, favorite_teams, inspirational_people from user where uid = " + userID
+         query = "select music, books, tv, games from user where uid = " + userID
          data = graph.fql(query)
-         return HttpResponse(json.dumps(data), mimetype="application/json") 
+         return HttpResponse(json.dumps(data), mimetype="application/json")
+
+def NewsTopics(request):
+    users = request.GET.get('users', '').split(",")
+    likes = list()
+    if (token) and (len(userID) > 0):
+        for u in users:
+            user_likes = FacebookLikesByUser(request, u)
+            music = user_likes['music'].split(", ")
+            books = user_likes['books'].split(", ")
+            tv = user_likes['tv'].split(", ")
+            games = user_likes['games'].split(", ")
+            likes = likes + music + books + tv + games
+        likes.sort()
+        return HttpResponse(likes, mimetype="application/json")
 
 def ParseLocations(possibleLocations, locations):
     result = []

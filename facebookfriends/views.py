@@ -98,7 +98,8 @@ def FacebookLikesByUser(request, userID=''):
     instance = UserSocialAuth.objects.filter(provider='facebook').filter(user=myUser)
     tokens = [x.tokens for x in instance]
     token = tokens[0]["access_token"]
-    if (len(userID) == 0) userID = request.GET.get('userID', '')
+    if (len(userID) == 0):
+         userID = request.GET.get('userID', '')
     if (token) and (len(userID) > 0):
          graph = facebook.GraphAPI(token)
          query = "select music, books, tv, games from user where uid = " + userID

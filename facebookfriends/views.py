@@ -9,6 +9,8 @@ from django.contrib.auth import logout
 from django.conf import settings
 from social_auth.models import UserSocialAuth
 from collections import Counter
+import urllib
+import urllib2
 
 @login_required(redirect_field_name="login/facebook")
 def FacebookFriends(request):
@@ -51,12 +53,28 @@ def FacebookStatusByLikes(request):
     token = tokens[0]["access_token"]
     if(token):
         graph = facebook.GraphAPI(token)
-        query = "select object_id from like where object_id in (select status_id from status WHERE uid in(SELECT uid2 FROM friend WHERE uid1 = me() limit 200))"
+        query = "select object_id from comment where object_id in (select status_id from status WHERE uid in(SELECT uid2 FROM friend WHERE uid1 = me() limit 200))"
+        query2 = "select status_id, message from status where uid in (SELECT uid2 FROM friend WHERE uid1 = me() limit 200)"
         data = graph.fql(query)
+        posts = graph.fql(query2)
         countLikes = Counter()
-	for obj in data:
-	   countLikes.update({obj["object_id"]: 1})
-        return HttpResponse(json.dumps(countLikes.most_common(50)), mimetype="application/json")
+        for obj in data:
+           countLikes.update({obj["object_id"]: 1})
+        most_common = countLikes.most_common(50)
+        common_list = Counter()
+        url = 'http://text-processing.com/api/sentiment/'
+        for obj in posts:
+           for common in most_common:
+              if(obj["status_id"] == common[0]):
+                 values = {'text':obj["message"].encode('utf-8')}
+                 data = urllib.urlencode(values)
+                 response = urllib2.urlopen(url, data)
+                 content = response.read()
+                 data = json.loads(content)
+                 prob = data["probability"]
+                 score = 1.3*prob["neg"] + prob["pos"]
+                 common_list.update({obj["message"]:score})
+        return HttpResponse(json.dumps(common_list), mimetype="application/json")
 
 @login_required(redirect_field_name="login/facebook")
 def FacebookFriendStatus(request):

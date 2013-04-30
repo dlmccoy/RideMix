@@ -3,7 +3,7 @@
  controlling the function of all parts of the application, which
  currently include the map, the search results, and the friends page
  */
-function RideMix(map_div_id, results_div_id, friends_div_id) {
+function RideMix(map_div_id, results_div_id, friends_div_id, news_div_id) {
     this.map = null;				// - Google Maps map
     this.cur_loc_marker = null;		// - Google Maps marker for user's position
     this.search_results = null;		// - list of dics that represent search results
@@ -13,6 +13,7 @@ function RideMix(map_div_id, results_div_id, friends_div_id) {
     this.results_div_id = results_div_id;
     //this.friends_div_id = friends_div_id;	// - I'm not touching friends right now,
     									 	//   Mike you can do that
+    this.news_div_id = news_div_id;
 }
 
 RideMix.prototype.init = function() {
@@ -40,6 +41,14 @@ RideMix.prototype.init = function() {
         $("#map_canvas").hide();
         $("#location_list").hide();
         $("#friend_list").show();
+    });
+    
+    $("#news_button").click(function(e) {
+        $("#navbar .cell").removeClass('selected');
+        $(e.target).addClass('selected');
+        $("#map_canvas").hide();
+        $("#location_list").hide();
+        $("#friend_list").hide();
     });
 
     this.initialize_map();

@@ -196,20 +196,20 @@ def insert_place_if(places, place):
         if 'rating' in place.keys():
             obj.rating = place['rating']
 
-        place_details = places.details(obj.reference)
-        if place_details['status'] == 'OK':
-            obj.address = place_details['result']['formatted_address']
-            if 'formatted_phone_number' in place_details['result'].keys():
-                obj.phone = place_details['result']['formatted_phone_number']
-            if 'opening_hours' in place_details['result'].keys():
-                hours = places.parseHours(place_details['result']['opening_hours']['periods'])
-                obj.open_hours = ','.join(hours['open'])
-                obj.close_hours = ','.join(hours['close'])
-            if 'website' in place_details['result'].keys():
-                obj.website = place_details['result']['website']
-        else:
-            print 'reference: ', obj.reference
-            print 'status: ', place_details['status']
+        #place_details = places.details(obj.reference)
+        #if place_details['status'] == 'OK':
+        #    obj.address = place_details['result']['formatted_address']
+        #    if 'formatted_phone_number' in place_details['result'].keys():
+        #        obj.phone = place_details['result']['formatted_phone_number']
+        #    if 'opening_hours' in place_details['result'].keys():
+        #        hours = places.parseHours(place_details['result']['opening_hours']['periods'])
+        #        obj.open_hours = ','.join(hours['open'])
+        #        obj.close_hours = ','.join(hours['close'])
+        #    if 'website' in place_details['result'].keys():
+        #        obj.website = place_details['result']['website']
+        #else:
+        #    print 'reference: ', obj.reference
+        #    print 'status: ', place_details['status']
 
         obj.save()
     

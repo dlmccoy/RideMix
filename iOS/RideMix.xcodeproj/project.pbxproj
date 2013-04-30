@@ -7,6 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A9143D311724F9B800326A55 /* NewsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9143D301724F9B800326A55 /* NewsViewController.m */; };
+		A9143D3717265D2200326A55 /* TopicView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9143D3617265D2200326A55 /* TopicView.m */; };
+		A9143D3D17267ED500326A55 /* TopicCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A9143D3C17267ED500326A55 /* TopicCollectionViewCell.m */; };
+		A977BEDC171CF17900F38B39 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A977BEDB171CF17900F38B39 /* LoginViewController.m */; };
+		A977BEDF171D27F600F38B39 /* ParametersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A977BEDE171D27F600F38B39 /* ParametersViewController.m */; };
+		A977BEE2171D68B600F38B39 /* UserParamsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A977BEE1171D68B600F38B39 /* UserParamsViewController.m */; };
+		A977BEE5171D77B200F38B39 /* ParamStringsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A977BEE4171D77B200F38B39 /* ParamStringsViewController.m */; };
 		A99A030E16FBF5B900B0C9B4 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A99A030D16FBF5B900B0C9B4 /* UIKit.framework */; };
 		A99A031016FBF5B900B0C9B4 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A99A030F16FBF5B900B0C9B4 /* Foundation.framework */; };
 		A99A031216FBF5B900B0C9B4 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A99A031116FBF5B900B0C9B4 /* CoreGraphics.framework */; };
@@ -60,6 +67,20 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		A9143D2F1724F9B800326A55 /* NewsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewsViewController.h; sourceTree = "<group>"; };
+		A9143D301724F9B800326A55 /* NewsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewsViewController.m; sourceTree = "<group>"; };
+		A9143D3517265D2100326A55 /* TopicView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TopicView.h; sourceTree = "<group>"; };
+		A9143D3617265D2200326A55 /* TopicView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TopicView.m; sourceTree = "<group>"; };
+		A9143D3B17267ED500326A55 /* TopicCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TopicCollectionViewCell.h; sourceTree = "<group>"; };
+		A9143D3C17267ED500326A55 /* TopicCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TopicCollectionViewCell.m; sourceTree = "<group>"; };
+		A977BEDA171CF17900F38B39 /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
+		A977BEDB171CF17900F38B39 /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
+		A977BEDD171D27F600F38B39 /* ParametersViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParametersViewController.h; sourceTree = "<group>"; };
+		A977BEDE171D27F600F38B39 /* ParametersViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParametersViewController.m; sourceTree = "<group>"; };
+		A977BEE0171D68B600F38B39 /* UserParamsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserParamsViewController.h; sourceTree = "<group>"; };
+		A977BEE1171D68B600F38B39 /* UserParamsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserParamsViewController.m; sourceTree = "<group>"; };
+		A977BEE3171D77B200F38B39 /* ParamStringsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParamStringsViewController.h; sourceTree = "<group>"; };
+		A977BEE4171D77B200F38B39 /* ParamStringsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParamStringsViewController.m; sourceTree = "<group>"; };
 		A99A030A16FBF5B900B0C9B4 /* RideMix.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RideMix.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A99A030D16FBF5B900B0C9B4 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		A99A030F16FBF5B900B0C9B4 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -196,10 +217,24 @@
 			children = (
 				A99A032816FBF5B900B0C9B4 /* MainStoryboard_iPad.storyboard */,
 				A99A032516FBF5B900B0C9B4 /* MainStoryboard_iPhone.storyboard */,
+				A9143D3B17267ED500326A55 /* TopicCollectionViewCell.h */,
+				A9143D3C17267ED500326A55 /* TopicCollectionViewCell.m */,
+				A9143D3517265D2100326A55 /* TopicView.h */,
+				A9143D3617265D2200326A55 /* TopicView.m */,
+				A977BEE0171D68B600F38B39 /* UserParamsViewController.h */,
+				A977BEE1171D68B600F38B39 /* UserParamsViewController.m */,
+				A977BEDD171D27F600F38B39 /* ParametersViewController.h */,
+				A977BEDE171D27F600F38B39 /* ParametersViewController.m */,
+				A977BEDA171CF17900F38B39 /* LoginViewController.h */,
+				A977BEDB171CF17900F38B39 /* LoginViewController.m */,
+				A977BEE3171D77B200F38B39 /* ParamStringsViewController.h */,
+				A977BEE4171D77B200F38B39 /* ParamStringsViewController.m */,
 				A99A05FB16FC985F00B0C9B4 /* FacebookFriendCell.h */,
 				A99A05FC16FC986000B0C9B4 /* FacebookFriendCell.m */,
 				A99A05F816FC781900B0C9B4 /* FriendsViewController.h */,
 				A99A05F916FC781A00B0C9B4 /* FriendsViewController.m */,
+				A9143D2F1724F9B800326A55 /* NewsViewController.h */,
+				A9143D301724F9B800326A55 /* NewsViewController.m */,
 				A99A05F316FC6ED700B0C9B4 /* PlacesViewController.h */,
 				A99A05F416FC6ED700B0C9B4 /* PlacesViewController.m */,
 				A99A058316FC03BD00B0C9B4 /* MapViewController.h */,
@@ -418,6 +453,13 @@
 				A99A05F516FC6ED700B0C9B4 /* PlacesViewController.m in Sources */,
 				A99A05FA16FC781A00B0C9B4 /* FriendsViewController.m in Sources */,
 				A99A05FD16FC986000B0C9B4 /* FacebookFriendCell.m in Sources */,
+				A977BEDC171CF17900F38B39 /* LoginViewController.m in Sources */,
+				A977BEDF171D27F600F38B39 /* ParametersViewController.m in Sources */,
+				A977BEE2171D68B600F38B39 /* UserParamsViewController.m in Sources */,
+				A977BEE5171D77B200F38B39 /* ParamStringsViewController.m in Sources */,
+				A9143D311724F9B800326A55 /* NewsViewController.m in Sources */,
+				A9143D3717265D2200326A55 /* TopicView.m in Sources */,
+				A9143D3D17267ED500326A55 /* TopicCollectionViewCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -566,6 +608,7 @@
 				A99A033216FBF5B900B0C9B4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

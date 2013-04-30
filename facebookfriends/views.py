@@ -109,7 +109,7 @@ def FacebookLikesByUser(request, userID=''):
 def NewsTopics(request):
     users = request.GET.get('users', '').split(",")
     likes = list()
-    if (token) and (len(userID) > 0):
+    if (len(userID) > 0):
         for u in users:
             user_likes = FacebookLikesByUser(request, u)
             music = user_likes['music'].split(", ")

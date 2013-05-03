@@ -24,14 +24,11 @@
         </script>
         <script type="text/javascript" src="{{ STATIC_URL }}js/ridemix.js"></script>
 	<style type="text/css">
-	  .ui-footer .ui-navbar .ui-grid-b .ui-block-a .ui-btn .ui-btn-inner {
+	  .ui-footer .ui-navbar li .ui-btn-icon-top .ui-btn-inner {
 	    padding-top: 10px;
 	  }
-	  .ui-footer .ui-navbar .ui-grid-b .ui-block-b .ui-btn .ui-btn-inner {
-	    padding-top: 10px;
-	  }
-	  .ui-footer .ui-navbar .ui-grid-b .ui-block-c .ui-btn .ui-btn-inner {
-	    padding-top: 10px;
+	  .ui-field-contain .ui-input-search {
+	    width: 100%;
 	  }
 	</style>
     <script type="text/javascript">
@@ -53,6 +50,7 @@
                 <h3>
                     RideMix
                 </h3>
+                <a href="#friend_page" data-transition="fade" data-theme="a" class="ui-btn-right">Add Friends to Ride</a>
             </div>
             <div data-role="content">
               <div id="map_canvas" style="height: 500px"></div>
@@ -70,10 +68,12 @@
                                 Places
                             </a>
                         </li>
-                        <li>
+                        <!--<li>
                             <a href="#friend_page" data-transition="fade" data-theme="" data-icon="">
                                 Friends
                             </a>
+<<<<<<< HEAD
+                        </li>-->
                         </li>
                         <li>
                             <a href="#news_page" data-transition="fade" data-theme="" data-icon="">
@@ -90,6 +90,7 @@
                 <h3>
                     RideMix
                 </h3>
+                <a href="#friend_page" data-transition="fade" data-theme="a" class="ui-btn-right">Add Friends to Ride</a>
             </div>
             <div data-role="content">
                 <div id="trending_nav" data-role="navbar">
@@ -115,11 +116,11 @@
                                 Places
                             </a>
                         </li>
-                        <li>
+                        <!--<li>
                             <a href="#friend_page" data-transition="fade" data-theme="" data-icon="">
                                 Friends
                             </a>
-                        </li>
+                        </li> -->
                         <li>
                             <a href="#news_page" data-transition="fade" data-theme="" data-icon="">
                                 News
@@ -133,15 +134,23 @@
         <div data-role="page" id="friend_page">
             <div data-theme="a" data-role="header">
                 <h3>
-                    RideMix
+                    Add Friends to Your Ride
                 </h3>
             </div>
             <div data-role="content">
+	        <div data-role="fieldcontain" id="friend_add_select">
+                    <!--<fieldset data-role="controlgroup" data-mini="true">-->
+                        <!--<label for="friend_add_select">
+                            Add friends to your ride
+                        </label>-->
+                        <input name="" id="friend_add_select" placeholder="Find Your Friends" value="" type="search"/>
+                    <!--</fieldset>-->
+                </div>
                 <div id="friend_selected_list" data-role="fieldcontain">
                     <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
-                        <legend>
+                        <!--<legend>
                             Selected:
-                        </legend>
+                        </legend>-->
                         <div id="selected_list"></div>
                     </fieldset>
                 </div>
@@ -155,8 +164,8 @@
                             Option
                         </label>
                     </fieldset>
-                </div>-->
-                <div data-role="fieldcontain" id="friend_add_select">
+                </div> -->
+                <!--<div data-role="fieldcontain" id="friend_add_select">
                     <fieldset data-role="controlgroup" data-mini="true">
                         <label for="friend_add_select">
                             Add friends to your ride
@@ -174,8 +183,8 @@
                         <label for="checkbox5">
                             Option
                         </label>-->
-                    </fieldset>
-                </div>
+                    <!--</fieldset>
+                </div>-->
             </div>
             <div data-theme="a" data-role="footer" data-id"myFooter" data-position="fixed">
                 <div id="navbar3" data-role="navbar" data-iconpos="top">
@@ -190,11 +199,11 @@
                                 Places
                             </a>
                         </li>
-                        <li>
+                        <!--<li>
                             <a href="#friend_page" data-transition="fade" data-theme="" data-icon="" class="ui-btn-active ui-state-persist">
                                 Friends
                             </a>
-                        </li>
+                        </li>-->
                         <li>
                             <a href="#news_page" data-transition="fade" data-theme="" data-icon="">
                                 News
@@ -210,6 +219,7 @@
                 <h3>
                     RideMix
                 </h3>
+                 <a href="#friend_page" data-transition="fade" data-theme="a" class="ui-btn-right">Add Friends to Ride</a>
             </div>
             <div data-role="content">
                 <div id="news_topic_suggestions"></div>
@@ -226,11 +236,11 @@
                                 Places
                             </a>
                         </li>
-                        <li>
+                        <!--<li>
                             <a href="#friend_page" data-transition="fade" data-theme="" data-icon="">
                                 Friends
                             </a>
-                        </li>
+                        </li>-->
                         <li>
                             <a href="#news_page" data-transition="fade" data-theme="" data-icon="" class="ui-btn-active ui-state-persist">
                                 News

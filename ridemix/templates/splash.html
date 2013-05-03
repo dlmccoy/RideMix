@@ -1,12 +1,28 @@
 {% extends "base.html" %}
 {% block header_addons %}
   <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/splash.css">
+   <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+        <link rel="stylesheet"
+          href="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.css" />
+ <script src="http://code.jquery.com/jquery-1.7.2.min.js">
+        </script>
+        <script 
+          src="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js">
+        </script>
+<style type="text/css">
+  .ui-mobile-viewport {
+    background-color: #333399;
+  }
+</style>
 {% endblock %}
 
 {% block content %}
 
 
-<div id="background-rings">
+<!-- <div id="background-rings">
   <img src="{{ STATIC_URL }}media/threeRingsWhite.png" style="width:95%; position:absolute; top:5%; left:3%"/>
 </div>
 <div id="logo">
@@ -14,6 +30,9 @@
 </div>
 <div class="button" id="hungry" onclick="window.location='new_home';">I'm hungry</div>
 <div class="button" id="bored"  onclick="window.location='new_home';">I'm bored</div>
-<div class="button" id="choosing" onclick="window.location='new_home';">I'm choosing</div>
-
+<div class="button" id="choosing" onclick="window.location='new_home';">I'm choosing</div> -->
+<div id="allButtons">
+<div data-role="button" onclick="window.location='new_home';">I'm hungry</div>
+<div data-role="button" onclick="window.location='new_home';">I'm bored</div>
+</div>
 {% endblock %}

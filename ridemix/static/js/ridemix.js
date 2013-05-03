@@ -3,7 +3,7 @@
  controlling the function of all parts of the application, which
  currently include the map, the search results, and the friends page
  */
-function RideMix(map_div_id, results_div_id, friends_div_id) {
+function RideMix(map_div_id, results_div_id, friends_div_id, news_div_id) {
     this.map = null;				// - Google Maps map
     this.cur_loc_marker = null;		// - Google Maps marker for user's position
     this.search_results = null;		// - list of dics that represent search results
@@ -13,6 +13,7 @@ function RideMix(map_div_id, results_div_id, friends_div_id) {
     this.results_div_id = results_div_id;
     //this.friends_div_id = friends_div_id;	// - I'm not touching friends right now,
     									 	//   Mike you can do that
+    this.news_div_id = news_div_id;
 }
 
 RideMix.prototype.init = function() {
@@ -40,6 +41,14 @@ RideMix.prototype.init = function() {
         $("#map_canvas").hide();
         $("#location_list").hide();
         $("#friend_list").show();
+    });
+    
+    $("#news_button").click(function(e) {
+        $("#navbar .cell").removeClass('selected');
+        $(e.target).addClass('selected');
+        $("#map_canvas").hide();
+        $("#location_list").hide();
+        $("#friend_list").hide();
     });
 
     this.initialize_map();
@@ -194,6 +203,7 @@ RideMix.prototype.write_results = function(results_list) {
     //var result_string = "<li data-role=\"list-divider\" role=\"heading\">Combined Results</li>";
     //var result_string = "<div data-role=\"collapsible\">";
     var result_string = "";  
+    var place_pages_string = "";
     //result_string += "<h3>Combined Results</h3></div>";
     for (i=0;i<results_list.length;i++) {
         var randNumber = Math.floor(Math.random()*6);
@@ -201,15 +211,33 @@ RideMix.prototype.write_results = function(results_list) {
         place = results_list[i];
         console.log(place);
 
-        result_string += "<div data-role=\"collapsible\">";
-        result_string += "<h3>" + place.name + " (" + place.distance + ")</h3>";
-        result_string += "<p><a href=\"http://maps.google.com?q=stanford\">Link</a>";
+        result_string += "<a href=\"#" + place.id + "\" data-role=\"button\"";
+        result_string += " onclick=\"changePage('" + place.id + "')\">";
+        result_string +=  place.name +" (" + place.distance + ")</a>";
+//        result_string += "<div data-role=\"collapsible\">";
+
+        place_pages_string += "<div id=\"" + place.id + "\"";
+        place_pages_string += "data-role=\"page\">";
+        place_pages_string += "<div data-role=\"header\">";
+        place_pages_string += "<h3>RideMix</h3>";
+        place_pages_string += "<a href=\"#location_page\" data-rel=\"back\"";
+        place_pages_string += " class=\"ui-btn-left\">Back</a>";
+        place_pages_string += "</div>";
+        place_pages_string += "<div data-role=\"content\">";
+        place_pages_string += "<h3>" + place.name + " (" + place.distance + ")</h3>";
+        place_pages_string += "<p><a href=\"http://maps.google.com?q=";
+        place_pages_string += place.lat + "," + place.lng + "\">Link</a>";
         if(place.gp_rating)
-          result_string += "<br />Google Rating: " + place.gp_rating;
+          place_pages_string += "<br />Google Rating: " + place.gp_rating;
         if(place.phone)
-          result_string += "<br /><a href=\"tel://" + place.phone + "\">Phone</a>";
-        result_string += "<br /><button onclick=\"submit_rating('"+place.id+ "',5)\" >+1</button>";
-        result_string += "</p></div>";
+          place_pages_string += "<br /><a href=\"tel://" + place.phone + "\">Phone</a>";
+        place_pages_string += "<br /><button onclick=\"submit_rating('";
+        place_pages_string += place.id+ "',5)\" >I like this place!</button>";
+        place_pages_string += "</p>";
+
+        place_pages_string += "</div>";
+        place_pages_string += "</div>";
+
 
         //Begin random friend stats 
         /*if (randNumber == 2)
@@ -233,7 +261,8 @@ RideMix.prototype.write_results = function(results_list) {
             result_string += "<div style=\"float:right;\">" + open_now + "</div><br />";
         }*/
     }
-    $("#"+this.results_div_id).html(result_string).collapsibleset();
+    $("#"+this.results_div_id).html(result_string).trigger("create");
+    $("#place_pages").html(place_pages_string);
 }
 
 RideMix.prototype.ridemix_compare = function(a,b) {
@@ -282,6 +311,11 @@ function submit_rating(id, rating) {
     'url': '/rate_place',
     'data': args,
   });
+}
+
+function changePage(page_id) {
+  $.mobile.changePage($("#" + page_id));
+  //console.log($("#" + page_id));
 }
 
 $(function() {

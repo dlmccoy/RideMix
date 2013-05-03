@@ -28,12 +28,14 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    // if the session is open, then load the data for our view controller
     AppDelegate *appDelegate = [[UIApplication sharedApplication]delegate];
+    
+    [appDelegate.session closeAndClearTokenInformation];
+    
+    // if the session is open, then load the data for our view controller
     if (!appDelegate.session.isOpen) {
         // create a fresh session object
         appDelegate.session = [[FBSession alloc] init];
-        
         [appDelegate.session openWithCompletionHandler:^(FBSession *session,
                                                              FBSessionState status,
                                                              NSError *error) {

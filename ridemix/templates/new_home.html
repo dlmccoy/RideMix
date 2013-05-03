@@ -31,6 +31,17 @@
 	    width: 100%;
 	  }
 	</style>
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-39191523-1']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
     </head>
     <body>
         <!-- Home -->
@@ -61,7 +72,14 @@
                             <a href="#friend_page" data-transition="fade" data-theme="" data-icon="">
                                 Friends
                             </a>
+<<<<<<< HEAD
                         </li>-->
+                        </li>
+                        <li>
+                            <a href="#news_page" data-transition="fade" data-theme="" data-icon="">
+                                News
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -81,7 +99,8 @@
                         <li><a href="#" id="trending_now_button">Trending Now</a></li>
                     </ul>
                 </div>
-                <div id="places_list" data-role="collapsible_set">
+ <!--               <div id="places_list" data-role="collapsible_set">-->
+                <div id="places_list" data-role="controlgroup">
                 </div>
             </div>
             <div data-theme="a" data-role="footer" data-id"myFooter" data-position="fixed">
@@ -101,7 +120,14 @@
                             <a href="#friend_page" data-transition="fade" data-theme="" data-icon="">
                                 Friends
                             </a>
+<<<<<<< HEAD
                         </li>-->
+                        </li>
+                        <li>
+                            <a href="#news_page" data-transition="fade" data-theme="" data-icon="">
+                                News
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -140,8 +166,17 @@
                             Option
                         </label>
                     </fieldset>
+<<<<<<< HEAD
                 </div> -->
-                
+	        </div>-->
+                <div data-role="fieldcontain" id="friend_add_select">
+                    <fieldset data-role="controlgroup" data-mini="true">
+                        <label for="friend_add_select">
+                            Add friends to your ride
+                        </label>
+                        <input name="" id="friend_add_select" placeholder="Friend Name" value="" type="search" />
+                    </fieldset>
+                </div>
                 <div id="friend_add_list" data-role="fieldcontain">
                     <fieldset data-role="controlgroup" data-type="vertical" data-mini="true">
                         <!--<input id="checkbox3" name="" type="checkbox" />
@@ -172,10 +207,56 @@
                             <a href="#friend_page" data-transition="fade" data-theme="" data-icon="" class="ui-btn-active ui-state-persist">
                                 Friends
                             </a>
+<<<<<<< HEAD
                         </li>-->
+                        </li>
+                        <li>
+                            <a href="#news_page" data-transition="fade" data-theme="" data-icon="">
+                                News
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>
+        </div>
+        <!-- News Topic Suggestions -->
+        <div data-role="page" id="news_page">
+            <div data-theme="a" data-role="header">
+                <h3>
+                    RideMix
+                </h3>
+            </div>
+            <div data-role="content">
+                <div id="news_topic_suggestions"></div>
+            <div data-theme="a" data-role="footer" data-id"myFooter" data-position="fixed">
+                <div id="navbar3" data-role="navbar" data-iconpos="top">
+                    <ul>
+                        <li>
+                            <a href="#home_page" data-transition="fade" data-theme="" data-icon="">
+                                Map
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#location_page" data-transition="fade" data-theme="" data-icon="">
+                                Places
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#friend_page" data-transition="fade" data-theme="" data-icon="">
+                                Friends
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#news_page" data-transition="fade" data-theme="" data-icon="" class="ui-btn-active ui-state-persist">
+                                News
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div id="place_pages">
+
         </div>
     </body>
 </html>

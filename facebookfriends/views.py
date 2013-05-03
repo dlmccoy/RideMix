@@ -57,7 +57,7 @@ def FacebookFriendsCheckins(request):
            rankings.update({row["checkin_id"]:score})
 	return HttpResponse(json.dumps(rankings), mimetype="application/json")
 
-@login_required(redirect_field_name="login/facebook")
+"""@login_required(redirect_field_name="login/facebook")
 def FacebookFriendsCheckinsIntersected(request):
     friends = [1111111, 2222222, 3333333, 4444444]
     myUser = request.user
@@ -100,7 +100,7 @@ def FacebookFriendsCheckinsIntersected(request):
            score = prob["pos"] - prob["neg"]
            rankings.update({row["checkin_id"]:score})
         return HttpResponse(json.dumps(rankings), mimetype="application/json")
-
+"""
 @login_required(redirect_field_name="login/facebook")
 def FacebookStatusByLikes(request):
     myUser = request.user

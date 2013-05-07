@@ -13,10 +13,23 @@ $(function() {
       $.mobile.loading("hide");
     });
 
-  $("#friend_add_select").live('change', function() {
-    //debugger;
-    cool = 5;
+  $("#friend_add_select").keyup(function(e) {
+    if(window.friend_timer) window.clearTimeout(friend_timer);
+
+    window.friend_timer = window.setTimeout(function() {
+      var value = $("#friend_add_select").val();
+      var regex = new RegExp(value, "gi");
+      var container = $("#friend_add_list").controlgroup("container");
+      container.html("");
+      for(var i in window.FRIEND_LIST) {
+        if(window.FRIEND_LIST[i]['name'].match(regex)) {
+          addToFriendList(container, i);
+        }
+      }
+      container.trigger('create');
+    }, 2000);
   });
+
 });
 
 function addToSelected(id) {
@@ -28,7 +41,7 @@ function addToSelected(id) {
   var input = $("<input>");
   input.attr('type', 'checkbox');
   input.attr('id', html_id);
-    input.attr('data-theme', 'e');
+  input.attr('data-theme', 'e');
   input.change(function(e) {
     $("#" + e.target.id + "_div").remove();
     var friend_id = parseInt(e.target.id); 
@@ -40,7 +53,6 @@ function addToSelected(id) {
   label.attr('for', html_id);
   label.text(friend['name']);
 
-  
   div.append(input);
   div.append(label);
 
@@ -51,10 +63,13 @@ function addToSelected(id) {
 
 function addToFriendList(container, id) {
   var friend = window.FRIEND_LIST[id];
-  var id =  id + "_friend";
+  var div_id =  id + "_friend";
   var anchor = $("<a>");
-  anchor.attr('id', id + "_div");
+  anchor.attr('id', div_id + "_div");
   anchor.attr('data-role', 'button');
+  if(window.SELECTED_FRIENDS.indexOf(id) != -1) {
+    anchor.css('display', 'none');
+  }
   anchor.click(function(e) {
     var this_id = e.currentTarget.id;
     $("#" + this_id).hide();

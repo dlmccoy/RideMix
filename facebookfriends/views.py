@@ -41,14 +41,16 @@ def FacebookFriendsCheckins(request):
     if(token):
         graph = facebook.GraphAPI(token)
         PLACE_TYPE = "RESTAURANT/CAFE"
-	queries = {"q1":"select author_uid, coords, target_id, message, timestamp, checkin_id from checkin WHERE author_uid in(SELECT uid2 FROM friend WHERE uid1 = me() limit 200) limit 200 ORDER BY timestamp",
+	queries = {"q1":"select author_uid, coords, target_id, message, timestamp, checkin_id from checkin WHERE author_uid in(SELECT uid2 FROM friend WHERE uid1 = me() limit 200) limit 200",
 "q2":"select page_id, type, description, talking_about_count, were_here_count from page where type='RESTAURANT/CAFE' and page_id in (select target_id from #q1)",
 "q3":"select uid, first_name, last_name from user where uid in (select author_uid from #q1)"}
         graph_data = graph.fql(queries)
         query_set1 = graph_data[0]["fql_result_set"]
         rankings = Counter()
+        for obj in query_set1:
+           rankings.update({obj["target_id"]:1})
         url = 'http://text-processing.com/api/sentiment/'
-        for row in query_set1:
+        """for row in query_set1:
            values = {'text':row["message"].encode('utf-8')}
            data = urllib.urlencode(values)
            response = urllib2.urlopen(url, data)
@@ -57,9 +59,10 @@ def FacebookFriendsCheckins(request):
            prob = data["probability"]
            score = prob["pos"] - prob["neg"]
            rankings.update({row["checkin_id"]:score})
-	return HttpResponse(json.dumps(rankings), mimetype="application/json")
+	"""
+        return HttpResponse(json.dumps(rankings), mimetype="application/json")
 
-"""@login_required(redirect_field_name="login/facebook")
+@login_required(redirect_field_name="login/facebook")
 def FacebookFriendsCheckinsIntersected(request):
     friends = [1111111, 2222222, 3333333, 4444444]
     myUser = request.user
@@ -81,7 +84,7 @@ def FacebookFriendsCheckinsIntersected(request):
            for friend in friends:
               intersection_list.append(friend["uid2"])
            friend_list = list(set(friend_list) & set(intersection_list))    
-        q1 = :"select author_uid, coords, target_id, message, timestamp, checkin_id from checkin WHERE author_uid in("
+        q1 = "select author_uid, coords, target_id, message, timestamp, checkin_id from checkin WHERE author_uid in("
         for friend in friend_list:
            q1 += friend + ", "
         q1 += "me()) limit 200 ORDER BY timestamp" 
@@ -91,18 +94,18 @@ def FacebookFriendsCheckinsIntersected(request):
         graph_data = graph.fql(queries)
         query_set1 = graph_data[0]["fql_result_set"]
         rankings = Counter()
-        url = 'http://text-processing.com/api/sentiment/'
-        for row in query_set1:
-           values = {'text':row["message"].encode('utf-8')}
-           data = urllib.urlencode(values)
-           response = urllib2.urlopen(url, data)
-           content = response.read()
-           json_content = json.loads(content)
-           prob = data["probability"]
-           score = prob["pos"] - prob["neg"]
-           rankings.update({row["checkin_id"]:score})
+        #url = 'http://text-processing.com/api/sentiment/'
+        #for row in query_set1:
+           #values = {'text':row["message"].encode('utf-8')}
+           #data = urllib.urlencode(values)
+           #response = urllib2.urlopen(url, data)
+           #content = response.read()
+           #json_content = json.loads(content)
+           #prob = data["probability"]
+           #score = prob["pos"] - prob["neg"]
+           #rankings.update({row["checkin_id"]:score})
         return HttpResponse(json.dumps(rankings), mimetype="application/json")
-"""
+
 @login_required(redirect_field_name="login/facebook")
 def FacebookStatusByLikes(request):
     myUser = request.user

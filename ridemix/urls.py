@@ -34,6 +34,7 @@ urlpatterns = patterns('',
     url(r'^get/places', 'home.views.GetPlaces'),
     url(r'^get/rankings', 'rankings.views.Rankings'),
     url(r'^get/trending', 'rankings.views.GetTrending'),
+    url(r'^get/details', 'rankings.views.GetDetails'),
 
     url(r'^rate_place/', 'rankings.views.RatePlace'),
 

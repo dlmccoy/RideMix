@@ -1,6 +1,8 @@
 import facebook
 import json
 import random
+from itertools import groupby
+import time
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
@@ -98,7 +100,7 @@ def FacebookLikesByUser(request, userID=''):
     instance = UserSocialAuth.objects.filter(provider='facebook').filter(user=myUser)
     tokens = [x.tokens for x in instance]
     token = tokens[0]["access_token"]
-    if (len(userID) == 0):
+    if (userID == string.empty):
          userID = request.GET.get('userID', '')
     if (token) and (len(userID) > 0):
          graph = facebook.GraphAPI(token)
@@ -107,18 +109,49 @@ def FacebookLikesByUser(request, userID=''):
          return HttpResponse(json.dumps(data), mimetype="application/json")
 
 def NewsTopics(request):
-    users = request.GET.get('users', '').split(",")
+    myUser = request.user
+    instance = UserSocialAuth.objects.filter(provider='facebook').filter(user=myUser)
+    tokens = [x.tokens for x in instance]
+    token = tokens[0]["access_token"]
+    users = request.GET.get('users', '')
     likes = list()
-    if (len(userID) > 0):
-        for u in users:
-            user_likes = FacebookLikesByUser(request, u)
-            music = user_likes['music'].split(", ")
-            books = user_likes['books'].split(", ")
-            tv = user_likes['tv'].split(", ")
-            games = user_likes['games'].split(", ")
-            likes = likes + music + books + tv + games
-        likes.sort()
-        return HttpResponse(likes, mimetype="application/json")
+    if (token):
+         graph = facebook.GraphAPI(token)
+         query = "select music, books, tv, games from user where uid in (" + users + ")"
+         data = graph.fql(query)
+         for user in data:
+             music = user['music'].split(", ")
+             likes = likes + music
+             books = user['books'].split(", ")
+             likes = likes + books
+             tv = user['tv'].split(", ")
+             likes = likes + tv
+             games = user['games'].split(", ")
+             likes = likes + games
+         likes.sort()
+	 grouped = [(topic, sum(1 for i in g)) for topic, g in groupby(likes)]
+#	 sorted_results = grouped.sort(key=lambda tup:tup[1]) 
+         return HttpResponse(json.dumps(grouped), mimetype="application/json")
+
+def Share(request):
+    myUser = request.user
+    instance = UserSocialAuth.objects.filter(provider='facebook').filter(user=myUser)
+    tokens = [x.tokens for x in instance]
+    token = tokens[0]["access_token"]
+    graph = facebook.GraphAPI(token)
+    graph.put_object("me", "feed", message="Testing wall posts.")
+    return redirect("home.views.NewHome")
+
+def SharePopup(request):
+    url = "https://www.facebook.com/dialog/feed?app_id="
+    url += settings.FACEBOOK_APP_ID
+    url += "&link=https://ridemix.com"
+    url += "&picture=http://static.ridemix.com/prod/media/logo.jpg"
+    url += "&name=Ridemix"
+    url += "&caption=Discover new places around you"
+    url += "&description=Introducing a new, fun way for you and your friends to find new places you like, right from any mobile device!"
+    url += "&redirect_uri=http://ridemix.com/new_home/"
+    return redirect(url) 
 
 def ParseLocations(possibleLocations, locations):
     result = []

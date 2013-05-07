@@ -136,16 +136,47 @@ def RatePlace(request):
 @login_required
 @json_response
 def GetTrending(request):
-  location = request.GET.get('location')
+    location = request.GET.get('location')
 
-  places = GooglePlaces.objects.all().order_by('-user_rating')[:25]
+    places = GooglePlaces.objects.all().order_by('-user_rating')[:25]
 
-  result = []
-  for place in places:
-    result.append(place.get_dic())
+    result = []
+    for place in places:
+        result.append(place.get_dic())
 
-  return result
- 
+    return result
+
+@login_required
+@json_response
+def GetDetails(request):
+    g_id = request.GET.get('gp_id')
+
+    place = GooglePlaces.objects.all().filter(gp_id=g_id)
+
+    if len(place) != 1:
+        return {}
+    else:
+        place = place[0]
+
+    if not place.phone:
+        places = ridemixapi.Places(settings.GOOGLE_API_KEY)
+        place_details = places.details(place.reference)
+        if place_details['status'] == 'OK':
+            place.address = place_details['result']['formatted_address']
+            if 'formatted_phone_number' in place_details['result'].keys():
+                place.phone = place_details['result']['formatted_phone_number']
+            if 'opening_hours' in place_details['result'].keys():
+                hours = places.parseHours(place_details['result']['opening_hours']['periods'])
+                place.open_hours = ','.join(hours['open'])
+                place.close_hours = ','.join(hours['close'])
+            if 'website' in place_details['result'].keys():
+                place.website = place_details['result']['website']
+            place.save()
+        else:
+            print 'reference: ', place.reference
+            print 'status: ', place_details['status']
+
+    return place.get_details()
 
 ###############################################################################
 #                             Helper Functions                                #
@@ -192,24 +223,10 @@ def insert_place_if(places, place):
         obj.lng = place['geometry']['location']['lng']
         obj.name = place['name']
         obj.icon = place['icon']
-        obj.reference = place['reference']
+        obj.reference = place['reference'] or ""
         if 'rating' in place.keys():
             obj.rating = place['rating']
 
-        #place_details = places.details(obj.reference)
-        #if place_details['status'] == 'OK':
-        #    obj.address = place_details['result']['formatted_address']
-        #    if 'formatted_phone_number' in place_details['result'].keys():
-        #        obj.phone = place_details['result']['formatted_phone_number']
-        #    if 'opening_hours' in place_details['result'].keys():
-        #        hours = places.parseHours(place_details['result']['opening_hours']['periods'])
-        #        obj.open_hours = ','.join(hours['open'])
-        #        obj.close_hours = ','.join(hours['close'])
-        #    if 'website' in place_details['result'].keys():
-        #        obj.website = place_details['result']['website']
-        #else:
-        #    print 'reference: ', obj.reference
-        #    print 'status: ', place_details['status']
 
         obj.save()
     

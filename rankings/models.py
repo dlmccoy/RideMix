@@ -17,7 +17,7 @@ class GooglePlaces(models.Model):
     gp_id = models.CharField(max_length=200, unique=True) #id from Google Places
     lat = models.FloatField(null=True)
     lng = models.FloatField(null=True)
-    pull_date = models.DateTimeField(auto_now_add=True)
+    pull_date = models.DateTimeField(auto_now=True,auto_now_add=True)
     name = models.CharField(max_length=200, null=True)
     icon = models.CharField(max_length=200, null=True)
     reference = models.CharField(max_length=250, null=True)
@@ -44,6 +44,21 @@ class GooglePlaces(models.Model):
         toReturn['user_rating'] = self.user_rating
         if (self.rating):
             toReturn['gp_rating'] = self.rating
+        #if (self.address):
+        #    toReturn['address'] = self.address
+        #if (self.phone):
+        #    toReturn['phone'] = self.phone
+        #if (self.open_hours):
+        #    toReturn['open_hours'] = self.open_hours
+        #if (self.close_hours):
+        #    toReturn['close_hours'] = self.close_hours
+        #if (self.website):
+        #    toReturn['website'] = self.website
+        return toReturn
+
+    def get_details(self):
+        toReturn = {}
+        toReturn['id'] = self.gp_id
         if (self.address):
             toReturn['address'] = self.address
         if (self.phone):

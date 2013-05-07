@@ -28,6 +28,7 @@ function addToSelected(id) {
   var input = $("<input>");
   input.attr('type', 'checkbox');
   input.attr('id', html_id);
+    input.attr('data-theme', 'e');
   input.change(function(e) {
     $("#" + e.target.id + "_div").remove();
     var friend_id = parseInt(e.target.id); 

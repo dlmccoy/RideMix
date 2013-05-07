@@ -50,3 +50,14 @@
   top: 30%;
   left: 5%;
 }
+
+.ui-mobile .ui-page {
+  background: #333399;
+}
+
+#allButtons {
+  position: absolute;
+  top: 25%;
+  left: 15%;
+  right: 15%;
+}

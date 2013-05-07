@@ -36,7 +36,7 @@ urlpatterns = patterns('',
     url(r'^get/rankings', 'rankings.views.Rankings'),
     url(r'^get/trending', 'rankings.views.GetTrending'),
     url(r'^get/news', 'facebookfriends.views.NewsTopics'),
-
+    url(r'^get/details', 'rankings.views.GetDetails'),
     url(r'^rate_place/', 'rankings.views.RatePlace'),
 
     # Uncomment the admin/doc line below to enable admin documentation:

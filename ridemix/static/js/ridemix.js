@@ -200,66 +200,48 @@ RideMix.prototype.write_search_results = function() {
 
 RideMix.prototype.write_results = function(results_list) {
 	console.log("write_search_results called");
-    //var result_string = "<li data-role=\"list-divider\" role=\"heading\">Combined Results</li>";
-    //var result_string = "<div data-role=\"collapsible\">";
     var result_string = "";  
     var place_pages_string = "";
-    //result_string += "<h3>Combined Results</h3></div>";
-    for (i=0;i<results_list.length;i++) {
-        var randNumber = Math.floor(Math.random()*6);
-        var rand2 = Math.floor(Math.random()*21);
-        place = results_list[i];
-        console.log(place);
+    if (results_list != null) {
+        for (i=0;i<results_list.length;i++) {
+            var randNumber = Math.floor(Math.random()*6);
+            var rand2 = Math.floor(Math.random()*21);
+            place = results_list[i];
+            console.log(place);
 
-        result_string += "<a href=\"#" + place.id + "\" data-role=\"button\"";
-        result_string += " onclick=\"changePage('" + place.id + "')\">";
-        result_string +=  place.name +" (" + place.distance + ")</a>";
-//        result_string += "<div data-role=\"collapsible\">";
+            result_string += "<a href=\"#" + place.id + "\" data-role=\"button\"";
+            result_string += " onclick=\"changePage('" + place.id + "')\">";
+            result_string +=  place.name +" (" + place.distance + ")</a>";
 
-        place_pages_string += "<div id=\"" + place.id + "\"";
-        place_pages_string += "data-role=\"page\">";
-        place_pages_string += "<div data-role=\"header\">";
-        place_pages_string += "<h3>RideMix</h3>";
-        place_pages_string += "<a href=\"#location_page\" data-rel=\"back\"";
-        place_pages_string += " class=\"ui-btn-left\">Back</a>";
-        place_pages_string += "</div>";
-        place_pages_string += "<div data-role=\"content\">";
-        place_pages_string += "<h3>" + place.name + " (" + place.distance + ")</h3>";
-        place_pages_string += "<p><a href=\"http://maps.google.com?q=";
-        place_pages_string += place.lat + "," + place.lng + "\">Link</a>";
-        if(place.gp_rating)
-          place_pages_string += "<br />Google Rating: " + place.gp_rating;
-        if(place.phone)
-          place_pages_string += "<br /><a href=\"tel://" + place.phone + "\">Phone</a>";
-        place_pages_string += "<br /><button onclick=\"submit_rating('";
-        place_pages_string += place.id+ "',5)\" >I like this place!</button>";
-        place_pages_string += "</p>";
+            place_pages_string += "<div id=\"" + place.id + "\"";
+            place_pages_string += "data-role=\"page\">";
+            place_pages_string += "<div data-role=\"header\">";
+            place_pages_string += "<h3>RideMix</h3>";
+            place_pages_string += "<a href=\"#location_page\" data-rel=\"back\"";
+            place_pages_string += " class=\"ui-btn-left\">Back</a>";
+            place_pages_string += "</div>";
+            place_pages_string += "<div data-role=\"content\">";
+            place_pages_string += "<h3>" + place.name + " (" + place.distance + ")</h3>";
+            place_pages_string += "<p><a href=\"http://maps.google.com?q=";
+            place_pages_string += place.lat + "," + place.lng + "\">Link</a>";
+            if(place.gp_rating)
+              place_pages_string += "<br />Google Rating: " + place.gp_rating;
+            if(place.phone)
+              place_pages_string += "<br /><a href=\"tel://" + place.phone + "\">Phone</a>";
+            place_pages_string += "<br /><button onclick=\"submit_rating('";
+            place_pages_string += place.id+ "',5)\" >I like this place!</button>";
+            place_pages_string += "</p>";
 
-        place_pages_string += "</div>";
-        place_pages_string += "</div>";
-
-
-        //Begin random friend stats 
-        /*if (randNumber == 2)
-          result_string += "<div class=\"friends_insert\">" + rand2 + " of your friends like this!</div>";
-        else if (randNumber == 3) {
-          var selected_size = window.SELECTED_FRIENDS.length;
-          if (selected_size != 0) {
-            var rand_friend = Math.floor(Math.random()*selected_size);
-             var friend_name = window.FRIEND_LIST[rand_friend]['name']
-             result_string += "<div class=\"friend_insert\">" + friend_name + " likes this!</div>";
-         }
-          
+            place_pages_string += "</div>";
+            place_pages_string += "</div>";
+            
+            /*if (place.open_now) {
+                result_string += "<div style=\"float:right;\">" + place.open_now + "</div><br />";
+            } else {
+                open_now = place.is_closed ? "Closed" : "Open";
+                result_string += "<div style=\"float:right;\">" + open_now + "</div><br />";
+            }*/
         }
-        */
-        //End random friend stats
-        
-        /*if (place.open_now) {
-            result_string += "<div style=\"float:right;\">" + place.open_now + "</div><br />";
-        } else {
-            open_now = place.is_closed ? "Closed" : "Open";
-            result_string += "<div style=\"float:right;\">" + open_now + "</div><br />";
-        }*/
     }
     $("#"+this.results_div_id).html(result_string).trigger("create");
     $("#place_pages").html(place_pages_string);

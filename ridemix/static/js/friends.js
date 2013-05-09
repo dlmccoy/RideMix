@@ -47,6 +47,12 @@ function addToSelected(id) {
     var friend_id = parseInt(e.target.id); 
     var friend_div_name = "#" + friend_id + "_friend_div";
     $(friend_div_name).show();
+    for(var i = 0; i < window.SELECTED_FRIENDS.length; i++) {
+      if(window.SELECTED_FRIENDS[i] == id) {
+        window.SELECTED_FRIENDS.splice(i, 1);
+        i = window.SELECTED_FRIENDS.length;
+      }
+    }
     //$("#friend_add_list fieldset").trigger('refresh');
   });
   var label = $("<label>");

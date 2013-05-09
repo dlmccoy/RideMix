@@ -276,6 +276,7 @@ def insert_venue_if(foursquare, venue):
         obj.checkin_count = venue['stats']['checkinsCount']
         obj.users_count = venue['stats']['usersCount']
         if 'contact' in venue.keys():
-            obj.phone = venue['contact']['phone']
+            if 'phone' in venue['contact'].keys():
+                obj.phone = venue['contact']['phone']
 
         obj.save()

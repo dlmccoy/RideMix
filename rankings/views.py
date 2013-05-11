@@ -12,6 +12,7 @@ from rankings.models import YelpAccess, Yelp
 from rankings.models import FoursquareAccess, Foursquare
 from rankings.models import UserRating
 
+from home.models import Log
 from rankings import ridemixapi
 from ridemix.util import json_response
 
@@ -105,6 +106,12 @@ def RatePlace(request):
 
     place_id = request.GET.get('place_id')
     user_rating = request.GET.get('user_rating')
+
+    # Log the request
+    log = Log()
+    log.user = request.user
+    log.log = "Accessed RatePlace(), %s, %s" % (place_id, user_rating)
+    log.save()
 
     # Check that all values were provided
     if not place_id or not user_rating:

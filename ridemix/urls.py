@@ -8,6 +8,7 @@ urlpatterns = patterns('',
     # Examples:
     url(r'^$', 'home.views.Splash'),
     url(r'^new_home', 'home.views.NewHome'),
+    url(r'^log', 'home.views.AddLog'),
     url(r'^privacy', 'home.views.Privacy'),
     #url(r'^recommendation_survey', 'survey.views.RecommendationSurvey'),
     url(r'^yelpsearch', 'yelp.views.YelpHome'),

@@ -303,6 +303,15 @@ function submit_rating(id, rating) {
   }
 }
 
+function log(message) {
+  $.ajax({
+    'url': '/log',
+    'data': {
+      'log': message,
+    }
+  });
+}
+
 function changePage(page_id) {
   $.mobile.changePage($("#" + page_id));
   //console.log($("#" + page_id));
@@ -317,12 +326,22 @@ $(function() {
   r.init();
 
   $("#location_page").on('pagebeforeshow', function(e) {
+    log("Accessed places tab");
     r.write_search_results();
   });
+  $("#friend_page").on('pagebeforeshow', function(e) {
+    log("Accessed friends page");
+  });
+  $("#news_page").on('pagebeforeshow', function(e) {
+    log("Accessed news tab");
+  });
+  
   $("#trending_now_button").click(function() {
+    log("Clicked Trending Now button");
     r.write_trending_results();
   });
   $("#general_places_button").click(function() {
+    log("Clicked My Ride button");
     r.write_search_results();
   });
 });

@@ -191,6 +191,7 @@ RideMix.prototype.dist_callback = function(response, status, results_list) {
 }
 
 RideMix.prototype.write_trending_results = function() {
+  this.trending_results.sort(sort_fn);
   this.write_results(this.trending_results);
 };
 
@@ -293,11 +294,22 @@ function submit_rating(id, rating) {
     'url': '/rate_place',
     'data': args,
   });
+  var obj = r.trending_results;
+  for(var i in obj) {
+    if(obj[i].id == id) {
+      obj[i].user_rating += 5;
+      return;
+    }
+  }
 }
 
 function changePage(page_id) {
   $.mobile.changePage($("#" + page_id));
   //console.log($("#" + page_id));
+}
+
+function sort_fn(a, b) {
+  return b.user_rating - a.user_rating;
 }
 
 $(function() {

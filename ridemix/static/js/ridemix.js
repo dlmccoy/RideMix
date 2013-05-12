@@ -305,7 +305,7 @@ function submit_rating(id, rating) {
 
 function log(message) {
   $.ajax({
-    'url': '/log',
+    'url': '/ridemix_log',
     'data': {
       'log': message,
     }

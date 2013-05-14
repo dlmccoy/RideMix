@@ -22,6 +22,9 @@
         <script 
           src="{{ STATIC_URL }}js/friends.js">
         </script>
+	<script 
+          src="{{ STATIC_URL }}js/news.js">
+        </script>
         <script type="text/javascript" src="{{ STATIC_URL }}js/ridemix.js"></script>
 	<style type="text/css">
 	  .ui-footer .ui-navbar li .ui-btn-icon-top .ui-btn-inner {
@@ -212,7 +215,7 @@
                             </a>
                         </li>-->
                         <li>
-                            <a href="#news_page" data-transition="fade" data-theme="" data-icon="">
+                            <a href="#news_page" onclick="fetchNewsTopics()" data-transition="fade" data-theme="" data-icon="">
                                 News
                             </a>
                         </li>
@@ -235,14 +238,13 @@
                  <a href="#friend_page" data-transition="fade" data-theme="a" class="ui-btn-right">Add Friends to Ride</a>
             </div>
             <div data-role="content">
-                <div id="news_topic_suggestions"></div>
-		    <div id="news_topics_list" data-role="fieldcontain">
-                        <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
-                            <legend>Selected: </legend>
+                <div id="news_topic_suggestions" data-role="fieldcontain">
+                    <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
+                        <legend>For Selected Friends: </legend>
                             <div id="news_list"></div>
-                        </fieldset>
-                    </div>
-                 </div>
+                    </fieldset>
+                </div>
+            </div>
             <div data-theme="a" data-role="footer" data-id"myFooter" data-position="fixed">
                 <div id="navbar3" data-role="navbar" data-iconpos="top">
                     <ul>

@@ -11,6 +11,7 @@ from django.http import HttpResponse
 from django.shortcuts import redirect, render, render_to_response
 from django.conf import settings
 
+from home.models import Log
 from ridemix.util import json_response
 
 def NewHome(request):
@@ -52,3 +53,13 @@ def Splash(request):
   if request.user.is_authenticated():
     return render(request, 'splash.html')
   return render(request, 'home.html')
+
+@login_required
+def AddLog(request):
+  info = request.GET.get('log')
+ 
+  log = Log()
+  log.user = request.user
+  log.log = info 
+  log.save()
+  return HttpResponse('')

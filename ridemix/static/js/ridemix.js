@@ -52,15 +52,17 @@ RideMix.prototype.init = function() {
     });
 
     this.initialize_map();
-	//TODO window.watchID = navigator.geolocation.watchPosition(this.watch_pos_callback);
+	window.watchID = navigator.geolocation.watchPosition(this.watch_pos_callback);
 }
 
 RideMix.prototype.watch_pos_callback = function(location) {
 	console.log(location);
-    var pos = new google.maps.LatLng(location.coords.latitude, location.coords.longitude);
-    this.cur_loc_marker.setPosition(pos);
-    this.map.setCenter(marker.position);
-    //TODO this.search_results = get search results
+    if (this.map) {
+        var pos = new google.maps.LatLng(location.coords.latitude, location.coords.longitude);
+        this.cur_loc_marker.setPosition(pos);
+        this.map.setCenter(marker.position);
+        this.update_results_list();
+    }
 }
 
 RideMix.prototype.initialize_map = function() {
@@ -132,9 +134,7 @@ RideMix.prototype.update_results_list = function() {
     var obj = this;
     var regular_request = $.getJSON(url, function(json_data) {
     	obj.search_results = json_data;
-      obj.calc_latlng_dists(obj.search_results);
-        //obj.combine_results(); // should be obj.sort results
-        //obj.write_places_results_list();
+        obj.calc_latlng_dists(obj.search_results);
     });
 
     url = "/get/trending?location=" + ll_string
@@ -159,12 +159,12 @@ RideMix.prototype.calc_latlng_dists = function(results_list) {
 	var service = new google.maps.DistanceMatrixService();
 
 	var obj = this;
-  service.getDistanceMatrix({
-      origins: [this.cur_loc_marker.position],
-      destinations: destinations,
-      travelMode: google.maps.TravelMode.DRIVING,	//TODO user choice
-      unitSystem: google.maps.UnitSystem.IMPERIAL	//TODO user choice
-  }, function(response, status) { obj.dist_callback(response, status, results_list); });
+    service.getDistanceMatrix({
+        origins: [this.cur_loc_marker.position],
+         destinations: destinations,
+        travelMode: google.maps.TravelMode.DRIVING,	//TODO user choice
+        unitSystem: google.maps.UnitSystem.IMPERIAL	//TODO user choice
+    }, function(response, status) { obj.dist_callback(response, status, results_list); });
 }
 
 RideMix.prototype.dist_callback = function(response, status, results_list) {
@@ -191,6 +191,7 @@ RideMix.prototype.dist_callback = function(response, status, results_list) {
 }
 
 RideMix.prototype.write_trending_results = function() {
+  this.trending_results.sort(sort_fn);
   this.write_results(this.trending_results);
 };
 
@@ -293,6 +294,22 @@ function submit_rating(id, rating) {
     'url': '/rate_place',
     'data': args,
   });
+  var obj = r.trending_results;
+  for(var i in obj) {
+    if(obj[i].id == id) {
+      obj[i].user_rating += 5;
+      return;
+    }
+  }
+}
+
+function log(message) {
+  $.ajax({
+    'url': '/ridemix_log',
+    'data': {
+      'log': message,
+    }
+  });
 }
 
 function changePage(page_id) {
@@ -300,17 +317,31 @@ function changePage(page_id) {
   //console.log($("#" + page_id));
 }
 
+function sort_fn(a, b) {
+  return b.user_rating - a.user_rating;
+}
+
 $(function() {
   r = new RideMix('map_canvas','places_list','');
   r.init();
 
   $("#location_page").on('pagebeforeshow', function(e) {
+    log("Accessed places tab");
     r.write_search_results();
   });
+  $("#friend_page").on('pagebeforeshow', function(e) {
+    log("Accessed friends page");
+  });
+  $("#news_page").on('pagebeforeshow', function(e) {
+    log("Accessed news tab");
+  });
+  
   $("#trending_now_button").click(function() {
+    log("Clicked Trending Now button");
     r.write_trending_results();
   });
   $("#general_places_button").click(function() {
+    log("Clicked My Ride button");
     r.write_search_results();
   });
 });

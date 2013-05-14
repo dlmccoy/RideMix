@@ -9,6 +9,7 @@ function addToNewsList(container, index) {
     anchor.attr('id', news_id + "_div");
     anchor.attr('data-role', "button");
     anchor.attr('href', "https://blekko.com/ws/?q=" + encodeURIComponent(topic) + "+%2Fnews");
+    anchor.attr('target', "_blank");
     anchor.text(topic);
     container.append(anchor);
 }    

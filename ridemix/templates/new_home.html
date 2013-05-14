@@ -62,7 +62,10 @@
 		<div id="share_div" data-role="popup">
 		    Testing popup 
 		</div>
-                <a href="#friend_page" data-transition="fade" data-theme="a" class="ui-btn-right">Add Friends to Ride</a>
+		<div data-role="controlgroup" data-type="horizontal" class="ui-btn-right" data-theme="a">
+                <a data-role="button" href="#friend_page" data-transition="fade" data-icon="plus">Friends</a>
+		<a data-role="button" onclick="window.location='logout';" data-icon="gear" data-iconpos="notext"> </a>
+		</div>
             </div>
             <div data-role="content">
               <div id="map_canvas" style="height: 500px"></div>

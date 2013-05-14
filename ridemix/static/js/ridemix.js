@@ -52,15 +52,17 @@ RideMix.prototype.init = function() {
     });
 
     this.initialize_map();
-	//TODO window.watchID = navigator.geolocation.watchPosition(this.watch_pos_callback);
+	window.watchID = navigator.geolocation.watchPosition(this.watch_pos_callback);
 }
 
 RideMix.prototype.watch_pos_callback = function(location) {
 	console.log(location);
-    var pos = new google.maps.LatLng(location.coords.latitude, location.coords.longitude);
-    this.cur_loc_marker.setPosition(pos);
-    this.map.setCenter(marker.position);
-    //TODO this.search_results = get search results
+    if (this.map) {
+        var pos = new google.maps.LatLng(location.coords.latitude, location.coords.longitude);
+        this.cur_loc_marker.setPosition(pos);
+        this.map.setCenter(marker.position);
+        this.update_results_list();
+    }
 }
 
 RideMix.prototype.initialize_map = function() {
@@ -132,9 +134,7 @@ RideMix.prototype.update_results_list = function() {
     var obj = this;
     var regular_request = $.getJSON(url, function(json_data) {
     	obj.search_results = json_data;
-      obj.calc_latlng_dists(obj.search_results);
-        //obj.combine_results(); // should be obj.sort results
-        //obj.write_places_results_list();
+        obj.calc_latlng_dists(obj.search_results);
     });
 
     url = "/get/trending?location=" + ll_string
@@ -159,12 +159,12 @@ RideMix.prototype.calc_latlng_dists = function(results_list) {
 	var service = new google.maps.DistanceMatrixService();
 
 	var obj = this;
-  service.getDistanceMatrix({
-      origins: [this.cur_loc_marker.position],
-      destinations: destinations,
-      travelMode: google.maps.TravelMode.DRIVING,	//TODO user choice
-      unitSystem: google.maps.UnitSystem.IMPERIAL	//TODO user choice
-  }, function(response, status) { obj.dist_callback(response, status, results_list); });
+    service.getDistanceMatrix({
+        origins: [this.cur_loc_marker.position],
+         destinations: destinations,
+        travelMode: google.maps.TravelMode.DRIVING,	//TODO user choice
+        unitSystem: google.maps.UnitSystem.IMPERIAL	//TODO user choice
+    }, function(response, status) { obj.dist_callback(response, status, results_list); });
 }
 
 RideMix.prototype.dist_callback = function(response, status, results_list) {
@@ -191,6 +191,7 @@ RideMix.prototype.dist_callback = function(response, status, results_list) {
 }
 
 RideMix.prototype.write_trending_results = function() {
+  this.trending_results.sort(sort_fn);
   this.write_results(this.trending_results);
 };
 
@@ -200,66 +201,48 @@ RideMix.prototype.write_search_results = function() {
 
 RideMix.prototype.write_results = function(results_list) {
 	console.log("write_search_results called");
-    //var result_string = "<li data-role=\"list-divider\" role=\"heading\">Combined Results</li>";
-    //var result_string = "<div data-role=\"collapsible\">";
     var result_string = "";  
     var place_pages_string = "";
-    //result_string += "<h3>Combined Results</h3></div>";
-    for (i=0;i<results_list.length;i++) {
-        var randNumber = Math.floor(Math.random()*6);
-        var rand2 = Math.floor(Math.random()*21);
-        place = results_list[i];
-        console.log(place);
+    if (results_list != null) {
+        for (i=0;i<results_list.length;i++) {
+            var randNumber = Math.floor(Math.random()*6);
+            var rand2 = Math.floor(Math.random()*21);
+            place = results_list[i];
+            console.log(place);
 
-        result_string += "<a href=\"#" + place.id + "\" data-role=\"button\"";
-        result_string += " onclick=\"changePage('" + place.id + "')\">";
-        result_string +=  place.name +" (" + place.distance + ")</a>";
-//        result_string += "<div data-role=\"collapsible\">";
+            result_string += "<a href=\"#" + place.id + "\" data-role=\"button\"";
+            result_string += " onclick=\"changePage('" + place.id + "')\">";
+            result_string +=  place.name +" (" + place.distance + ")</a>";
 
-        place_pages_string += "<div id=\"" + place.id + "\"";
-        place_pages_string += "data-role=\"page\">";
-        place_pages_string += "<div data-role=\"header\">";
-        place_pages_string += "<h3>RideMix</h3>";
-        place_pages_string += "<a href=\"#location_page\" data-rel=\"back\"";
-        place_pages_string += " class=\"ui-btn-left\">Back</a>";
-        place_pages_string += "</div>";
-        place_pages_string += "<div data-role=\"content\">";
-        place_pages_string += "<h3>" + place.name + " (" + place.distance + ")</h3>";
-        place_pages_string += "<p><a href=\"http://maps.google.com?q=";
-        place_pages_string += place.lat + "," + place.lng + "\">Link</a>";
-        if(place.gp_rating)
-          place_pages_string += "<br />Google Rating: " + place.gp_rating;
-        if(place.phone)
-          place_pages_string += "<br /><a href=\"tel://" + place.phone + "\">Phone</a>";
-        place_pages_string += "<br /><button onclick=\"submit_rating('";
-        place_pages_string += place.id+ "',5)\" >I like this place!</button>";
-        place_pages_string += "</p>";
+            place_pages_string += "<div id=\"" + place.id + "\"";
+            place_pages_string += "data-role=\"page\">";
+            place_pages_string += "<div data-role=\"header\">";
+            place_pages_string += "<h3>RideMix</h3>";
+            place_pages_string += "<a href=\"#location_page\" data-rel=\"back\"";
+            place_pages_string += " class=\"ui-btn-left\">Back</a>";
+            place_pages_string += "</div>";
+            place_pages_string += "<div data-role=\"content\">";
+            place_pages_string += "<h3>" + place.name + " (" + place.distance + ")</h3>";
+            place_pages_string += "<p><a href=\"http://maps.google.com?q=";
+            place_pages_string += place.lat + "," + place.lng + "\">Link</a>";
+            if(place.gp_rating)
+              place_pages_string += "<br />Google Rating: " + place.gp_rating;
+            if(place.phone)
+              place_pages_string += "<br /><a href=\"tel://" + place.phone + "\">Phone</a>";
+            place_pages_string += "<br /><button onclick=\"submit_rating('";
+            place_pages_string += place.id+ "',5)\" >I like this place!</button>";
+            place_pages_string += "</p>";
 
-        place_pages_string += "</div>";
-        place_pages_string += "</div>";
-
-
-        //Begin random friend stats 
-        /*if (randNumber == 2)
-          result_string += "<div class=\"friends_insert\">" + rand2 + " of your friends like this!</div>";
-        else if (randNumber == 3) {
-          var selected_size = window.SELECTED_FRIENDS.length;
-          if (selected_size != 0) {
-            var rand_friend = Math.floor(Math.random()*selected_size);
-             var friend_name = window.FRIEND_LIST[rand_friend]['name']
-             result_string += "<div class=\"friend_insert\">" + friend_name + " likes this!</div>";
-         }
-          
+            place_pages_string += "</div>";
+            place_pages_string += "</div>";
+            
+            /*if (place.open_now) {
+                result_string += "<div style=\"float:right;\">" + place.open_now + "</div><br />";
+            } else {
+                open_now = place.is_closed ? "Closed" : "Open";
+                result_string += "<div style=\"float:right;\">" + open_now + "</div><br />";
+            }*/
         }
-        */
-        //End random friend stats
-        
-        /*if (place.open_now) {
-            result_string += "<div style=\"float:right;\">" + place.open_now + "</div><br />";
-        } else {
-            open_now = place.is_closed ? "Closed" : "Open";
-            result_string += "<div style=\"float:right;\">" + open_now + "</div><br />";
-        }*/
     }
     $("#"+this.results_div_id).html(result_string).trigger("create");
     $("#place_pages").html(place_pages_string);
@@ -311,6 +294,22 @@ function submit_rating(id, rating) {
     'url': '/rate_place',
     'data': args,
   });
+  var obj = r.trending_results;
+  for(var i in obj) {
+    if(obj[i].id == id) {
+      obj[i].user_rating += 5;
+      return;
+    }
+  }
+}
+
+function log(message) {
+  $.ajax({
+    'url': '/ridemix_log',
+    'data': {
+      'log': message,
+    }
+  });
 }
 
 function changePage(page_id) {
@@ -318,17 +317,31 @@ function changePage(page_id) {
   //console.log($("#" + page_id));
 }
 
+function sort_fn(a, b) {
+  return b.user_rating - a.user_rating;
+}
+
 $(function() {
   r = new RideMix('map_canvas','places_list','');
   r.init();
 
   $("#location_page").on('pagebeforeshow', function(e) {
+    log("Accessed places tab");
     r.write_search_results();
   });
+  $("#friend_page").on('pagebeforeshow', function(e) {
+    log("Accessed friends page");
+  });
+  $("#news_page").on('pagebeforeshow', function(e) {
+    log("Accessed news tab");
+  });
+  
   $("#trending_now_button").click(function() {
+    log("Clicked Trending Now button");
     r.write_trending_results();
   });
   $("#general_places_button").click(function() {
+    log("Clicked My Ride button");
     r.write_search_results();
   });
 });

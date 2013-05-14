@@ -1,5 +1,6 @@
 from geopy import distance, Point
 import json
+import re
 
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
@@ -12,6 +13,7 @@ from rankings.models import YelpAccess, Yelp
 from rankings.models import FoursquareAccess, Foursquare
 from rankings.models import UserRating
 
+from home.models import Log
 from rankings import ridemixapi
 from ridemix.util import json_response
 
@@ -106,6 +108,12 @@ def RatePlace(request):
     place_id = request.GET.get('place_id')
     user_rating = request.GET.get('user_rating')
 
+    # Log the request
+    log = Log()
+    log.user = request.user
+    log.log = "Accessed RatePlace(), %s, %s" % (place_id, user_rating)
+    log.save()
+
     # Check that all values were provided
     if not place_id or not user_rating:
         return fail 
@@ -164,7 +172,8 @@ def GetDetails(request):
         if place_details['status'] == 'OK':
             place.address = place_details['result']['formatted_address']
             if 'formatted_phone_number' in place_details['result'].keys():
-                place.phone = place_details['result']['formatted_phone_number']
+                phone = place_details['result']['formatted_phone_number']
+                place.phone = re.sub(r'\D', '', phone)
             if 'opening_hours' in place_details['result'].keys():
                 hours = places.parseHours(place_details['result']['opening_hours']['periods'])
                 place.open_hours = ','.join(hours['open'])
@@ -190,6 +199,12 @@ def combine_all_information(obj):
     # Retrieves yelp info
     if obj.yelp:
         dic.update(obj.yelp.get_dic())
+    elif obj.phone != None:
+        yelp_obj = Yelp.objects.filter(name=obj.phone)
+        if len(yelp_obj) != 0:
+            obj.yelp = yelp_obj[0]
+            obj.save()
+            dic.update(yelp_obj[0].get_dic())
     else:
         yelp_obj = Yelp.objects.filter(name=obj.name)
         if len(yelp_obj) != 0:
@@ -268,7 +283,8 @@ def insert_venue_if(foursquare, venue):
         obj.tip_count = venue['stats']['tipCount']
         obj.checkin_count = venue['stats']['checkinsCount']
         obj.users_count = venue['stats']['usersCount']
-        if 'phone' in venue.keys():
-            obj.phone = venue['contact']['phone']
+        if 'contact' in venue.keys():
+            if 'phone' in venue['contact'].keys():
+                obj.phone = venue['contact']['phone']
 
         obj.save()

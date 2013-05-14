@@ -192,22 +192,42 @@ def NewsTopics(request):
     users = request.GET.get('users', '')
     likes = list()
     if (token):
-         graph = facebook.GraphAPI(token)
-         query = "select music, books, tv, games from user where uid in (" + users + ")"
-         data = graph.fql(query)
-         for user in data:
-             music = user['music'].split(", ")
-             likes = likes + music
-             books = user['books'].split(", ")
-             likes = likes + books
-             tv = user['tv'].split(", ")
-             likes = likes + tv
-             games = user['games'].split(", ")
-             likes = likes + games
-         likes.sort()
-	 grouped = [(topic, sum(1 for i in g)) for topic, g in groupby(likes)]
-#	 sorted_results = grouped.sort(key=lambda tup:tup[1]) 
-         return HttpResponse(json.dumps(grouped), mimetype="application/json")
+        graph = facebook.GraphAPI(token)
+        query = "select music, books, tv, games, education, hometown_location from user where uid = me() or uid in (" + users + ")"
+        data = graph.fql(query)
+        schools_arr = list()
+        for user in data:
+	    music = user['music'].split(", ")
+            likes = likes + music
+            books = user['books'].split(", ")
+            likes = likes + books
+            tv = user['tv'].split(", ")
+            likes = likes + tv
+            games = user['games'].split(", ")
+            likes = likes + games
+            schools = user['education'] 
+#            for school in schools:
+#                name = school['school']['name']
+#                likes.append(name)
+#            hometown = user['hometown_location']
+#            likes.append(hometown)
+        likes = filter(None, likes)
+        #likes.sort()
+        grouped = [(topic, sum(1 for i in g)) for topic, g in groupby(likes)]
+        random.shuffle(grouped)
+        sorted_results = sorted(grouped, key=lambda topic: topic[1]) 
+        sorted_results.reverse()
+        sorted_results = sorted_results[:100] 
+        return HttpResponse(json.dumps(sorted_results), mimetype="application/json")
+#        return HttpResponse(json.dumps(schools_arr), mimetype="application/json")
+   
+    return HttpResponse("Error", mimetype="application/json")
+
+def Blekko(request):
+    topic = request.GET.get('topic', '')
+    news = list()
+    html = urllib2.urlopen("http://blekko.com/ws/?q=" + urllib.quote(topic) + "+%2Fnews-magazine").read()
+    return HttpResponse(html)
 
 def Share(request):
     myUser = request.user

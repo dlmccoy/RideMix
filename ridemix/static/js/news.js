@@ -8,7 +8,7 @@ function addToNewsList(container, index) {
     var anchor = $("<a>");
     anchor.attr('id', news_id + "_div");
     anchor.attr('data-role', "button");
-    anchor.attr('href', "https://blekko.com/ws/?q=" + encodeURIComponent(topic) + "+%2Fnews");
+    anchor.attr('href', "https://blekko.com/ws/?q=" + encodeURIComponent(topic) + "+%2Fnews-magazine");
     anchor.attr('target', "_blank");
     anchor.text(topic);
     container.append(anchor);

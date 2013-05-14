@@ -213,7 +213,8 @@ def NewsTopics(request):
         grouped = [(topic, sum(1 for i in g)) for topic, g in groupby(likes)]
         random.shuffle(grouped)
         sorted_results = sorted(grouped, key=lambda topic: topic[1]) 
-        sorted_results.reverse() 
+        sorted_results.reverse()
+        sorted_results = sorted_results[:100] 
         return HttpResponse(json.dumps(sorted_results), mimetype="application/json")
 #        return HttpResponse(json.dumps(schools_arr), mimetype="application/json")
    

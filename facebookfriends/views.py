@@ -234,7 +234,7 @@ def NewsTopics(request):
         likes = filter(None, likes)
         #likes.sort()
         grouped = [(topic, sum(1 for i in g)) for topic, g in groupby(likes)]
-        random.shuffle(grouped)
+        #random.shuffle(grouped)
         sorted_results = sorted(grouped, key=lambda topic: topic[1]) 
         sorted_results.reverse()
         sorted_results = sorted_results[:100] 

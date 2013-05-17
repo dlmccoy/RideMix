@@ -42,14 +42,27 @@ def FacebookFriendsCheckins(request):
     if(token):
         graph = facebook.GraphAPI(token)
         PLACE_TYPE = "RESTAURANT/CAFE"
-	queries = {"q1":"select author_uid, coords, target_id, message, timestamp, checkin_id from checkin WHERE author_uid in(SELECT uid2 FROM friend WHERE uid1 = me() limit 200) limit 200 ORDER BY timestamp",
-"q2":"select page_id, type, description, talking_about_count, were_here_count from page where type='RESTAURANT/CAFE' and page_id in (select target_id from #q1)",
+	queries = {"q1":"select author_uid, coords, target_id, message, timestamp, checkin_id from checkin WHERE author_uid in(SELECT uid2 FROM friend WHERE uid1 = me() limit 200) limit 200",
+"q2":"select name, phone, page_id, description, talking_about_count, were_here_count from page where type='RESTAURANT/CAFE' and page_id in (select target_id from #q1)",
 "q3":"select uid, first_name, last_name from user where uid in (select author_uid from #q1)"}
         graph_data = graph.fql(queries)
         query_set1 = graph_data[0]["fql_result_set"]
         rankings = Counter()
-        url = 'http://text-processing.com/api/sentiment/'
-        for row in query_set1:
+        for obj in query_set1:
+           rankings.update({obj["target_id"]:1})
+        query_set2 = graph_data[1]["fql_result_set"]
+        places_list = []
+        for target_id in rankings:
+           count = rankings[target_id]
+           for obj in query_set2:
+              if(target_id == obj["page_id"]):
+                 name = obj["name"]
+                 number = obj["phone"]
+                 place_id = obj["page_id"]
+                 description = obj["description"]
+                 places_list.append({"name":name, "number":number, "place_id":place_id, "description":description, "count":count})
+        #url = 'http://text-processing.com/api/sentiment/'
+        """for row in query_set1:
            values = {'text':row["message"].encode('utf-8')}
            data = urllib.urlencode(values)
            response = urllib2.urlopen(url, data)
@@ -58,11 +71,24 @@ def FacebookFriendsCheckins(request):
            prob = data["probability"]
            score = prob["pos"] - prob["neg"]
            rankings.update({row["checkin_id"]:score})
-	return HttpResponse(json.dumps(rankings), mimetype="application/json")
+	"""
+        return HttpResponse(json.dumps(places_list), mimetype="application/json")
 
-"""@login_required(redirect_field_name="login/facebook")
+def friendIntersectQuery(friends):
+   query = "select uid2 from friend where uid1 = me()"
+   for friend in friends:
+      query = "SELECT uid1 FROM friend WHERE uid2=" + str(friend) + " AND uid1 in (" + query + ")"
+   return query
+
+@login_required(redirect_field_name="login/facebook")
 def FacebookFriendsCheckinsIntersected(request):
-    friends = [1111111, 2222222, 3333333, 4444444]
+    #friends = [223754, 203807]
+    friends = request.GET.__getitem__('friends')
+    if friends == '':
+        friends = []
+    else:
+        friends = map(int,friends.split(','))
+    print friends
     myUser = request.user
     instance = UserSocialAuth.objects.filter(provider='facebook').filter(user=myUser)
     tokens = [x.tokens for x in instance]
@@ -70,40 +96,44 @@ def FacebookFriendsCheckinsIntersected(request):
     if(token):
         graph = facebook.GraphAPI(token)
         PLACE_TYPE = "RESTAURANT/CAFE"
-        friends_query = "select uid2 from friend where uid = me()"
-        friends = graph.fql(friends_query)["fql_result_set"]
+        friends_query = friendIntersectQuery(friends)
+        #return HttpResponse(json.dumps(friends_query), mimetype="application/json")
+        friends = graph.fql(friends_query)
+        print friends
         friend_list = []
         for friend in friends:
-           friend_list.append(friend["uid2"])
-        for uid in friends:
-           friends_query = "select uid2 from friend where uid = " + uid
-           friends = graph.fql(friends_query)["fql_result_set"]
-           intersection_list = []
-           for friend in friends:
-              intersection_list.append(friend["uid2"])
-           friend_list = list(set(friend_list) & set(intersection_list))    
-        q1 = :"select author_uid, coords, target_id, message, timestamp, checkin_id from checkin WHERE author_uid in("
-        for friend in friend_list:
-           q1 += friend + ", "
-        q1 += "me()) limit 200 ORDER BY timestamp" 
+           friend_list.append(friend["uid1"])
+        q1 = "select author_uid, coords, target_id, message, timestamp, checkin_id from checkin WHERE author_uid in("+ friends_query+")"
         queries = {"q1":q1,
-"q2":"select page_id, type, description, talking_about_count, were_here_count from page where type='RESTAURANT/CAFE' and page_id in (select target_id from #q1)",
+"q2":"select name, phone, page_id, type, description, talking_about_count, were_here_count from page where type='RESTAURANT/CAFE' and page_id in (select target_id from #q1)",
 "q3":"select uid, first_name, last_name from user where uid in (select author_uid from #q1)"}
         graph_data = graph.fql(queries)
         query_set1 = graph_data[0]["fql_result_set"]
         rankings = Counter()
-        url = 'http://text-processing.com/api/sentiment/'
-        for row in query_set1:
-           values = {'text':row["message"].encode('utf-8')}
-           data = urllib.urlencode(values)
-           response = urllib2.urlopen(url, data)
-           content = response.read()
-           json_content = json.loads(content)
-           prob = data["probability"]
-           score = prob["pos"] - prob["neg"]
-           rankings.update({row["checkin_id"]:score})
-        return HttpResponse(json.dumps(rankings), mimetype="application/json")
-"""
+        for obj in query_set1:
+           rankings.update({obj["target_id"]:1})
+        query_set2 = graph_data[1]["fql_result_set"]
+        places_list = []
+        for target_id in rankings:
+           count = rankings[target_id]
+           for obj in query_set2:
+              if(target_id == obj["page_id"]):
+                 name = obj["name"]
+                 number = obj["phone"]
+                 place_id = obj["page_id"]
+                 description = obj["description"]
+                 places_list.append({"name":name, "number":number, "place_id":place_id, "description":description, "count":count})
+        #for row in query_set1:
+           #values = {'text':row["message"].encode('utf-8')}
+           #data = urllib.urlencode(values)
+           #response = urllib2.urlopen(url, data)
+           #content = response.read()
+           #json_content = json.loads(content)
+           #prob = data["probability"]
+           #score = prob["pos"] - prob["neg"]
+           #rankings.update({row["checkin_id"]:score})
+        return HttpResponse(json.dumps(places_list), mimetype="application/json")
+
 @login_required(redirect_field_name="login/facebook")
 def FacebookStatusByLikes(request):
     myUser = request.user
@@ -212,7 +242,7 @@ def NewsTopics(request):
         likes = filter(None, likes)
         #likes.sort()
         grouped = [(topic, sum(1 for i in g)) for topic, g in groupby(likes)]
-        random.shuffle(grouped)
+        #random.shuffle(grouped)
         sorted_results = sorted(grouped, key=lambda topic: topic[1]) 
         sorted_results.reverse()
         sorted_results = sorted_results[:100] 

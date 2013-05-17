@@ -81,7 +81,13 @@ def friendIntersectQuery(friends):
 
 @login_required(redirect_field_name="login/facebook")
 def FacebookFriendsCheckinsIntersected(request):
-    friends = [223754, 203807]
+    #friends = [223754, 203807]
+    friends = request.GET.__getitem__('friends')
+    if friends == '':
+        friends = []
+    else:
+        friends = map(int,friends.split(','))
+    print friends
     myUser = request.user
     instance = UserSocialAuth.objects.filter(provider='facebook').filter(user=myUser)
     tokens = [x.tokens for x in instance]
@@ -92,6 +98,7 @@ def FacebookFriendsCheckinsIntersected(request):
         friends_query = friendIntersectQuery(friends)
         #return HttpResponse(json.dumps(friends_query), mimetype="application/json")
         friends = graph.fql(friends_query)
+        print friends
         friend_list = []
         for friend in friends:
            friend_list.append(friend["uid1"])

@@ -40,6 +40,7 @@ urlpatterns = patterns('',
     url(r'^get/news', 'facebookfriends.views.NewsTopics'),
     url(r'^get/blekko', 'facebookfriends.views.Blekko'),
     url(r'^get/details', 'rankings.views.GetDetails'),
+    url(r'^get/token', 'home.views.GetToken'),
     url(r'^rate_place/', 'rankings.views.RatePlace'),
 
     # Uncomment the admin/doc line below to enable admin documentation:

@@ -6,3 +6,8 @@ class Log(models.Model):
   user = models.ForeignKey('auth.User') 
   added = models.DateTimeField(auto_now_add=True)
   log = models.CharField(max_length=200)
+
+class TurkToken(models.Model):
+  user = models.ForeignKey('auth.User')
+  added = models.DateTimeField(auto_now_add=True)
+  string = models.CharField(max_length=200)

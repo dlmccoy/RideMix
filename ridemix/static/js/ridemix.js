@@ -371,13 +371,23 @@ function log(message) {
 
 function changePage(page_id) {
   $.mobile.changePage($("#" + page_id));
-  //console.log($("#" + page_id));
 }
 
 function sort_fn(a, b) {
   return b.user_rating - a.user_rating;
 }
 
+function checkForAccesses() {
+  if(window.accessed_location && window.accessed_map && window.accessed_news) {
+    if(window.already_done_with_token) return;
+    $.ajax({
+      'url': '/get/token',
+    }).then(function(data) {
+      alert(data);
+    });
+    window.already_done_with_token = true;
+  }
+}
 $(function() {
   r = new RideMix('map_canvas','places_list','');
   r.init();
@@ -385,12 +395,21 @@ $(function() {
   $("#location_page").on('pagebeforeshow', function(e) {
     log("Accessed places tab");
     r.write_search_results();
+    window.accessed_location = true;
+    checkForAccesses();
   });
   $("#friend_page").on('pagebeforeshow', function(e) {
     log("Accessed friends page");
   });
+  $("#home_page").on('pagebeforeshow', function(e) {
+    log("Accessed map tab");
+    window.accessed_map = true;
+    checkForAccesses();
+  });
   $("#news_page").on('pagebeforeshow', function(e) {
     log("Accessed news tab");
+    window.accessed_news = true;
+    checkForAccesses();
   });
   
   $("#trending_now_button").click(function() {

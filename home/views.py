@@ -11,7 +11,7 @@ from django.http import HttpResponse
 from django.shortcuts import redirect, render, render_to_response
 from django.conf import settings
 
-from home.models import Log
+from home.models import Log, TurkToken
 from ridemix.util import json_response
 
 def NewHome(request):
@@ -63,3 +63,16 @@ def AddLog(request):
   log.log = info 
   log.save()
   return HttpResponse('')
+
+@login_required
+@json_response
+def GetToken(request):
+  newToken = TurkToken()
+  newToken.user = request.user
+  random_generator = random.SystemRandom()
+  length = 20
+  alphabet = string.ascii_letters + string.digits
+  random_string = str().join(random_generator.choice(alphabet) for _ in range(length)) 
+  newToken.string = random_string 
+  newToken.save()
+  return random_string

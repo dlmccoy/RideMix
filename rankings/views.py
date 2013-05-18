@@ -1,6 +1,7 @@
 from geopy import distance, Point
 import json
 import re
+import urllib
 
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
@@ -238,7 +239,9 @@ def insert_place_if(places, place):
         obj.lng = place['geometry']['location']['lng']
         obj.name = place['name']
         obj.icon = place['icon']
-        obj.reference = place['reference'] or ""
+        if place['reference']:
+          #obj.reference = place['reference']
+          obj.reference = "reference"
         if 'rating' in place.keys():
             obj.rating = place['rating']
 

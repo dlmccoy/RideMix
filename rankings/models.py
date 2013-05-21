@@ -42,18 +42,19 @@ class GooglePlaces(models.Model):
         toReturn['name'] = self.name
         toReturn['icon'] = self.icon
         toReturn['user_rating'] = self.user_rating
+        toReturn['reference'] = self.reference
         if (self.rating):
             toReturn['gp_rating'] = self.rating
-        #if (self.address):
-        #    toReturn['address'] = self.address
-        #if (self.phone):
-        #    toReturn['phone'] = self.phone
-        #if (self.open_hours):
-        #    toReturn['open_hours'] = self.open_hours
-        #if (self.close_hours):
-        #    toReturn['close_hours'] = self.close_hours
-        #if (self.website):
-        #    toReturn['website'] = self.website
+        if (self.address):
+            toReturn['address'] = self.address
+        if (self.phone):
+            toReturn['phone'] = self.phone
+        if (self.open_hours):
+            toReturn['open_hours'] = self.open_hours
+        if (self.close_hours):
+            toReturn['close_hours'] = self.close_hours
+        if (self.website):
+            toReturn['website'] = self.website
         return toReturn
 
     def get_details(self):
@@ -131,10 +132,10 @@ class Foursquare(models.Model):
         #toReturn['lat'] = self.lat
         #toReturn['lng'] = self.lng
         #toReturn['name'] = self.name
-        toReturn['yelp_likes'] = self.likes
-        toReturn['yelp_tip_count'] = self.tip_count
-        toReturn['yelp_checkin_count'] = self.checkin_count
-        toReturn['yelp_users_count'] = self.users_count
+        toReturn['foursquare_likes'] = self.likes
+        toReturn['foursquare_tip_count'] = self.tip_count
+        toReturn['foursquare_checkin_count'] = self.checkin_count
+        toReturn['foursquare_users_count'] = self.users_count
         return toReturn
 
 class UserRating(models.Model):

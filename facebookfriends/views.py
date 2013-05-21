@@ -14,6 +14,7 @@ from social_auth.models import UserSocialAuth
 from collections import Counter
 import urllib
 import urllib2
+import base64
 
 @login_required(redirect_field_name="login/facebook")
 def FacebookFriends(request):
@@ -81,7 +82,13 @@ def friendIntersectQuery(friends):
 
 @login_required(redirect_field_name="login/facebook")
 def FacebookFriendsCheckinsIntersected(request):
-    friends = [223754, 203807]
+    #friends = [223754, 203807]
+    friends = request.GET.__getitem__('friends')
+    if friends == '':
+        friends = []
+    else:
+        friends = map(int,friends.split(','))
+    print friends
     myUser = request.user
     instance = UserSocialAuth.objects.filter(provider='facebook').filter(user=myUser)
     tokens = [x.tokens for x in instance]
@@ -92,6 +99,7 @@ def FacebookFriendsCheckinsIntersected(request):
         friends_query = friendIntersectQuery(friends)
         #return HttpResponse(json.dumps(friends_query), mimetype="application/json")
         friends = graph.fql(friends_query)
+        print friends
         friend_list = []
         for friend in friends:
            friend_list.append(friend["uid1"])
@@ -234,7 +242,7 @@ def NewsTopics(request):
         likes = filter(None, likes)
         #likes.sort()
         grouped = [(topic, sum(1 for i in g)) for topic, g in groupby(likes)]
-        random.shuffle(grouped)
+        #random.shuffle(grouped)
         sorted_results = sorted(grouped, key=lambda topic: topic[1]) 
         sorted_results.reverse()
         sorted_results = sorted_results[:100] 
@@ -248,6 +256,15 @@ def Blekko(request):
     news = list()
     html = urllib2.urlopen("http://blekko.com/ws/?q=" + urllib.quote(topic) + "+%2Fnews-magazine").read()
     return HttpResponse(html)
+
+def BingNews(request):
+    topic = request.GET.get('topic', '')
+    news = list()
+    request = urllib2.Request("https://api.datamarket.azure.com/Bing/Search/v1/Composite?Sources=%27news%27&Query=%27" + urllib.quote(topic) + "%27&Market=%27en-US%27&NewsSortBy=%27Date%27&$format=JSON")
+    base64string = base64.encodestring('%s:%s' % ('', settings.BING_ACCOUNT_KEY)).replace('\n', '')
+    request.add_header("Authorization", "Basic %s" % base64string) 
+    result = urllib2.urlopen(request)
+    return HttpResponse(result, mimetype="application/json")
 
 def Share(request):
     myUser = request.user

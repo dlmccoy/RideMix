@@ -6,13 +6,12 @@
 function RideMix(map_div_id, results_div_id, friends_div_id, news_div_id) {
     this.map = null;				// - Google Maps map
     this.cur_loc_marker = null;		// - Google Maps marker for user's position
-    this.search_results = null;		// - list of dics that represent search results
+    this.search_results = [];		// - list of dics that represent search results
     								//   must be sorted by user
+    this.search_markers = [];
     this.types = 'restaurant';		// - TODO let user select eventually...
     this.map_div_id = map_div_id;
     this.results_div_id = results_div_id;
-    //this.friends_div_id = friends_div_id;	// - I'm not touching friends right now,
-    									 	//   Mike you can do that
     this.news_div_id = news_div_id;
 }
 
@@ -134,7 +133,7 @@ RideMix.prototype.update_results_list = function() {
     var obj = this;
     var regular_request = $.getJSON(url, function(json_data) {
     	obj.search_results = json_data;
-        obj.calc_latlng_dists(obj.search_results);
+        obj.get_facebook_checkins();
     });
 
     url = "/get/trending?location=" + ll_string
@@ -142,7 +141,43 @@ RideMix.prototype.update_results_list = function() {
       obj.trending_results = json_data;
       obj.calc_latlng_dists(obj.trending_results);
     });
+}
 
+RideMix.prototype.get_facebook_checkins = function() {
+    console.log("get_facebook_checkins called");
+    if (window.SELECTED_FRIENDS.length > 0) {
+        var url = 'intersect?friends=';
+        for (var i in window.SELECTED_FRIENDS) {
+            id = window.FRIEND_LIST[window.SELECTED_FRIENDS[i]].id;
+            url += id + ',';
+        }
+        url = url.slice(0,-1);
+    
+        var obj = this;
+        var intersect_request = $.getJSON(url, function(json_data) {
+            for (var i in json_data) {
+                index = obj.fb_index_of(json_data[i],obj.search_results);
+                if (index != -1) {
+                    obj.search_results[index]['fb_checkins'] = json_data[i].count;
+                }
+            }
+        });
+    }
+    this.calc_latlng_dists(this.search_results);
+}
+
+RideMix.prototype.fb_index_of = function(obj,array) {
+    for (var i in array) {
+        result = array[i];
+        if (result.name == obj.name) {
+            return i;
+        } else if (result.number.replace(/\d/g,'') == obj.phone) {
+            return i;
+        }
+        else {
+            return -1;
+        }
+    }
 }
 
 RideMix.prototype.calc_latlng_dists = function(results_list) {
@@ -208,7 +243,7 @@ RideMix.prototype.write_results = function(results_list) {
             var randNumber = Math.floor(Math.random()*6);
             var rand2 = Math.floor(Math.random()*21);
             place = results_list[i];
-            console.log(place);
+            //console.log(place);
 
             result_string += "<a href=\"#" + place.id + "\" data-role=\"button\"";
             result_string += " onclick=\"changePage('" + place.id + "')\">";
@@ -246,6 +281,20 @@ RideMix.prototype.write_results = function(results_list) {
     }
     $("#"+this.results_div_id).html(result_string).trigger("create");
     $("#place_pages").html(place_pages_string);
+    this.generate_markers();
+}
+
+RideMix.prototype.generate_markers = function() {
+    for (var i = 0; i < this.search_markers.length; i++) {
+        this.search_markers[i].setMap(null);
+    }
+    this.search_markers = [];
+    for (var i = 0; i < this.search_results.length; i++) {
+        place = this.search_results[i];
+        pos = new google.maps.LatLng(place['lat'],place['lng']);
+        temp_loc_marker = new google.maps.Marker({map: this.map,position: pos,animation: google.maps.Animation.DROP,title: place.name});
+        this.search_markers.push(temp_loc_marker)
+    }
 }
 
 RideMix.prototype.ridemix_compare = function(a,b) {
@@ -253,8 +302,11 @@ RideMix.prototype.ridemix_compare = function(a,b) {
 	// track how user values distance over rating and friends
 	
 	// what contributes to rating:
-	// 1. distance, 2.5 miles per star
-	// 2. gp_rating
+	// 1. distance, -2.5 per mile
+	// 2. gp_rating, 1 per star
+    // 3. fb_checkins, 5 per checkin
+    // 4. yelp, 0.01 * review_count * rating
+    // 5. 4square, 1 per tip + 0.01 * checkin * user_count
 	
 	a_score = 0; // higher score is better
 	b_score = 0;
@@ -272,12 +324,17 @@ RideMix.prototype.ridemix_compare = function(a,b) {
     a_score += (-2.5 * a_dist);
     b_score += (-2.5 * b_dist);
     
-    if (a.gp_rating) {
-    	a_score += a.gp_rating;
-    }
-	if (b.gp_rating) {
-		b_score += b.gp_rating;
-	}
+    if (a.gp_rating) { a_score += a.gp_rating; }
+	if (b.gp_rating) { b_score += b.gp_rating; }
+
+    if (a.fb_checkins) { a_score += (5 * a.fb_checkins); }
+    if (b.fb_checkins) { b_score += (5 * b.fb_checkins); }
+
+    if (a.yelp_id) { a_score += (a.yelp_rating * a.yelp_review_count * 0.01); }
+    if (b.yelp_id) { b_score += (b.yelp_rating * b.yelp_review_count * 0.01); }
+
+    if (a.foursquare_id) { a_score += (a.foursquare_tip_count + (a.foursquare_checkin_count * a.foursquare_users_count * 0.01)); }
+    if (b.foursquare_id) { b_score += (b.foursquare_tip_count + (b.foursquare_checkin_count * b.foursquare_users_count * 0.01)); }
 
     if (a_score > b_score) { return -1; }
     else if (a_score < b_score) { return 1; }

@@ -262,6 +262,15 @@ RideMix.prototype.write_results = function(results_list) {
             place_pages_string += place.lat + "," + place.lng + "\">Link</a>";
             if(place.gp_rating)
               place_pages_string += "<br />Google Rating: " + place.gp_rating;
+            if(place.yelp_id) {
+              place_pages_string += "<br />Yelp Rating: " + place.yelp_rating;
+              place_pages_string += "<br />Number of Yelp Reviews: " + place.yelp_review_count;
+            }
+            if(place.foursquare_id) {
+              place_pages_string += "<br />Foursquare Tip Count: " + place.foursquare_tip_count;
+              place_pages_string += "<br />Foursquare Checkin Count: " + place.foursquare_checkin_count;
+              place_pages_string += "<br />Foursquare Users Count: " + place.foursquare_users_count;
+            }
             if(place.phone)
               place_pages_string += "<br /><a href=\"tel://" + place.phone + "\">Phone</a>";
             place_pages_string += "<br /><button onclick=\"submit_rating('";

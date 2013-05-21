@@ -385,23 +385,29 @@ $(function() {
   $("#location_page").on('pagebeforeshow', function(e) {
     log("Accessed places tab");
     r.write_search_results();
+    _gaq.push(['_trackPageview', '/#location_page']);
   });
   $("#friend_page").on('pagebeforeshow', function(e) {
     log("Accessed friends page");
+    _gaq.push(['_trackPageview', '/#friend_page']);
   });
   $("#news_page").on('pagebeforeshow', function(e) {
     log("Accessed news tab");
+    _gaq.push(['_trackPageview', '/#news_page']);
   });
   $("#home_page").on('pagebeforeshow', function(e) {
     log("Accessed map tab");
+    _gaq.push(['_trackPageview', '/#home_page']);
   });
   
   $("#trending_now_button").click(function() {
     log("Clicked Trending Now button");
     r.write_trending_results();
+    _gaq.push(['_trackEvent', 'Place Buttons', 'Trending']);
   });
   $("#general_places_button").click(function() {
     log("Clicked My Ride button");
+    _gaq.push(['_trackEvent', 'Place Buttons', 'My Ride']);
     r.write_search_results();
   });
 });

@@ -392,6 +392,9 @@ $(function() {
   $("#news_page").on('pagebeforeshow', function(e) {
     log("Accessed news tab");
   });
+  $("#home_page").on('pagebeforeshow', function(e) {
+    log("Accessed map tab");
+  });
   
   $("#trending_now_button").click(function() {
     log("Clicked Trending Now button");

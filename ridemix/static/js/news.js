@@ -56,10 +56,11 @@ function fetchNewsTopics() {
 
 function expandNews(index) {
     var container = $('#' + index + "_topic_list");
-    var alreadyThere = container.innerHTML;
+    var alreadyThere = container[0].innerHTML;
     if (typeof alreadyThere === 'undefined' || alreadyThere == "") {
         var topic = window.NEWS[index][0];
         var url = '/get/bingnews?topic=' + encodeURIComponent(topic);
+//        var url = '/get/bingnews?topic=' + topic;
         $.mobile.loading();
         window.bing_ajax = $.ajax({
             'url' : url,

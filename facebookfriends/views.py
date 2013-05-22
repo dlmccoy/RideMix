@@ -258,7 +258,7 @@ def Blekko(request):
     return HttpResponse(html)
 
 def BingNews(request):
-    topic = request.GET.get('topic', '')
+    topic = (request.GET.get('topic', '')).encode('ascii', 'replace')
     news = list()
     request = urllib2.Request("https://api.datamarket.azure.com/Bing/Search/v1/Composite?Sources=%27news%27&Query=%27" + urllib.quote(topic) + "%27&Market=%27en-US%27&NewsSortBy=%27Date%27&$format=JSON")
     base64string = base64.encodestring('%s:%s' % ('', settings.BING_ACCOUNT_KEY)).replace('\n', '')

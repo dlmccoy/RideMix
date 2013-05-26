@@ -22,13 +22,6 @@ RideMix.prototype.init = function() {
 	window.watchID = navigator.geolocation.watchPosition(this.watch_pos_callback);
 }
 
-RideMix.prototype.resize_center_map = function() {
-    setTimeout(function() {
-        google.maps.event.trigger(r.map, 'resize');
-        r.map.setCenter(r.cur_loc_marker.position);
-    }, 200);
-}
-
 RideMix.prototype.watch_pos_callback = function(location) {
 	console.log(location);
     if (this.map) {
@@ -385,6 +378,11 @@ $(function() {
   $("#home_page").on('pagebeforeshow', function(e) {
     log("Accessed map tab");
     _gaq.push(['_trackPageview', '/#home_page']);
+  });
+
+  $("#home_page").on('pageshow', function(e) {
+    google.maps.event.trigger(r.map, 'resize');
+    r.map.setCenter(r.cur_loc_marker.position);
   });
   
   $("#trending_now_button").click(function() {

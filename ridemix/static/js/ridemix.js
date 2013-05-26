@@ -272,7 +272,7 @@ RideMix.prototype.generate_markers = function() {
     for (var i = 0; i < this.search_results.length; i++) {
         place = this.search_results[i];
         pos = new google.maps.LatLng(place['lat'],place['lng']);
-        temp_loc_marker = new google.maps.Marker({map: this.map,position: pos,animation: google.maps.Animation.DROP,title: place.name});
+        temp_loc_marker = new MarkerWithLabel({map: this.map,position: pos,animation: google.maps.Animation.DROP, labelContent: place.name, labelClass: "labels", labelAnchor: new google.maps.Point(50, 0),});
         this.search_markers.push(temp_loc_marker)
     }
 }

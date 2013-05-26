@@ -17,41 +17,16 @@ function RideMix(map_div_id, results_div_id, friends_div_id, news_div_id) {
 
 RideMix.prototype.init = function() {
 	console.log("init called");
-	$("#map_button").click(function(e) {
-        $("#navbar .cell").removeClass('selected');
-        $(e.target).addClass('selected');
-        $("#map_canvas").show();
-        $("#location_list").hide();
-        $("#friend_list").hide();
-    });
-    $("#map_button").click()
-
-    $("#list_button").click(function(e) {
-        $("#navbar .cell").removeClass('selected');
-        $(e.target).addClass('selected');
-        $("#map_canvas").hide();
-        $("#friend_list").hide();
-        $("#location_list").show();
-    });
-
-    $("#friend_button").click(function(e) {
-        $("#navbar .cell").removeClass('selected');
-        $(e.target).addClass('selected');
-        $("#map_canvas").hide();
-        $("#location_list").hide();
-        $("#friend_list").show();
-    });
-    
-    $("#news_button").click(function(e) {
-        $("#navbar .cell").removeClass('selected');
-        $(e.target).addClass('selected');
-        $("#map_canvas").hide();
-        $("#location_list").hide();
-        $("#friend_list").hide();
-    });
 
     this.initialize_map();
 	window.watchID = navigator.geolocation.watchPosition(this.watch_pos_callback);
+}
+
+RideMix.prototype.resize_center_map = function() {
+    setTimeout(function() {
+        google.maps.event.trigger(r.map, 'resize');
+        r.map.setCenter(r.cur_loc_marker.position);
+    }, 200);
 }
 
 RideMix.prototype.watch_pos_callback = function(location) {
@@ -72,6 +47,9 @@ RideMix.prototype.initialize_map = function() {
     };
     this.map = new google.maps.Map(document.getElementById(this.map_div_id),
          mapOptions);
+    setTimeout(function() {
+        google.maps.event.trigger(this.map,'resize');
+    }, 500);
     if(navigator.geolocation) {
     	var obj = this;
         navigator.geolocation.getCurrentPosition(function(position) {

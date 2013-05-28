@@ -67,6 +67,7 @@ function addToSelected(id) {
   container.trigger('create');
   window.SELECTED_FRIENDS.push(id);
   r.update_results_list();
+  $("#nofriends").remove();
 }
 
 function addToFriendList(container, id) {

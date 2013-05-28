@@ -243,9 +243,10 @@ RideMix.prototype.write_results = function(results_list) {
               place_pages_string += "<br />Foursquare Checkin Count: " + place.foursquare_checkin_count;
               place_pages_string += "<br />Foursquare Users Count: " + place.foursquare_users_count;
             }
-            if(place.fb_checkins) {
-              place_pages_string += "<br />Number of Facebook Checkins: " + place.fb_checkins;
+            if(!place.fb_checkins) {
+              place.fb_checkins = 0;
             }
+            place_pages_string += "<br />Facebook Checkins by friends: " + place.fb_checkins;
             if(place.phone)
               place_pages_string += "<br /><a href=\"tel://" + place.phone + "\">Phone</a>";
             place_pages_string += "<br /><button onclick=\"submit_rating('";

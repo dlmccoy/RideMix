@@ -50,11 +50,15 @@
   .ui-popup {
     text-align: left; 
   } 
+  h3 {
+    color: #ffffff;
+    text-shadow: none;
+  }
 </style>
 {% endblock %}
 {% block content %}
 <img src="{{ STATIC_URL }}media/logoBlackShadow.png" alt="RideMix Logo" style = "height: 70px; padding-top: 15%;">
-<div><a onclick="window.location='login/facebook';"><img id="facebookloginbutton" src="{{ STATIC_URL }}media/login-button.png" alt="Login with Facebook"></a></div>
+<h3>Social Recommendations Right Here Right Now</h3>
 <div><a rel="external" href="login/facebook"><img id="facebookloginbutton" src="{{ STATIC_URL }}media/login-button.png" alt="Login with Facebook"></a></div>
 <div data-role="controlgroup" data-type="horizontal" data-mini="true">
   <a href="#mission" data-role="button" data-rel="popup" data-position-to="window">Mission</a>

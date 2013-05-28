@@ -115,40 +115,41 @@ RideMix.prototype.update_results_list = function() {
 }
 
 RideMix.prototype.get_facebook_checkins = function() {
-    console.log("get_facebook_checkins called");
-    if (window.SELECTED_FRIENDS.length > 0) {
-        var url = 'intersect?friends=';
-        for (var i in window.SELECTED_FRIENDS) {
-            id = window.FRIEND_LIST[window.SELECTED_FRIENDS[i]].id;
-            url += id + ',';
-        }
-        url = url.slice(0,-1);
-    
-        var obj = this;
-        var intersect_request = $.getJSON(url, function(json_data) {
-            for (var i in json_data) {
-                index = obj.fb_index_of(json_data[i],obj.search_results);
-                if (index != -1) {
-                    obj.search_results[index]['fb_checkins'] = json_data[i].count;
-                }
-            }
-        });
+  console.log("get_facebook_checkins called");
+  if (window.SELECTED_FRIENDS.length > 0) {
+    var url = 'intersect?friends=';
+    for (var i in window.SELECTED_FRIENDS) {
+        id = window.FRIEND_LIST[window.SELECTED_FRIENDS[i]].id;
+        url += id + ',';
     }
-    this.calc_latlng_dists(this.search_results);
+    url = url.slice(0,-1);
+
+    var obj = this;
+    var intersect_request = $.getJSON(url, function(json_data) {
+      console.log('FB data found', json_data);    
+      for (var i in json_data) {
+        index = obj.fb_index_of(json_data[i],obj.search_results);
+        if (index != -1) {
+          obj.search_results[index]['fb_checkins'] = json_data[i].count;
+        }
+      }
+    });
+  }
+  this.calc_latlng_dists(this.search_results);
 }
 
 RideMix.prototype.fb_index_of = function(obj,array) {
-    for (var i in array) {
-        result = array[i];
-        if (result.name == obj.name) {
-            return i;
-        } else if (result.number.replace(/\d/g,'') == obj.phone) {
-            return i;
-        }
-        else {
-            return -1;
-        }
+  for (var i in array) {
+    result = array[i];
+    if (result.name == obj.name) {
+      return i;
+    } else if (result.number.replace(/\d/g,'') == obj.phone) {
+      return i;
     }
+    else {
+      return -1;
+    }
+  }
 }
 
 RideMix.prototype.calc_latlng_dists = function(results_list) {
@@ -229,8 +230,8 @@ RideMix.prototype.write_results = function(results_list) {
             place_pages_string += "</div>";
             place_pages_string += "<div data-role=\"content\">";
             place_pages_string += "<h3>" + place.name + " (" + place.distance + ")</h3>";
-            place_pages_string += "<p><a href=\"http://maps.google.com?q=";
-            place_pages_string += place.lat + "," + place.lng + "\">Link</a>";
+            place_pages_string += "<p><a data-role='button' href=\"http://maps.google.com?q=";
+            place_pages_string += place.lat + "," + place.lng + "\">Map</a>";
             if(place.gp_rating)
               place_pages_string += "<br />Google Rating: " + place.gp_rating;
             if(place.yelp_id) {
@@ -241,6 +242,9 @@ RideMix.prototype.write_results = function(results_list) {
               place_pages_string += "<br />Foursquare Tip Count: " + place.foursquare_tip_count;
               place_pages_string += "<br />Foursquare Checkin Count: " + place.foursquare_checkin_count;
               place_pages_string += "<br />Foursquare Users Count: " + place.foursquare_users_count;
+            }
+            if(place.fb_checkins) {
+              place_pages_string += "<br />Number of Facebook Checkins: " + place.fb_checkins;
             }
             if(place.phone)
               place_pages_string += "<br /><a href=\"tel://" + place.phone + "\">Phone</a>";

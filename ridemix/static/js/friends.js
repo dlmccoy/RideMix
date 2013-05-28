@@ -54,6 +54,7 @@ function addToSelected(id) {
       }
     }
     //$("#friend_add_list fieldset").trigger('refresh');
+    r.update_results_list();
   });
   var label = $("<label>");
   label.attr('for', html_id);
@@ -65,6 +66,7 @@ function addToSelected(id) {
   container.append(div);
   container.trigger('create');
   window.SELECTED_FRIENDS.push(id);
+  r.update_results_list();
 }
 
 function addToFriendList(container, id) {

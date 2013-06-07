@@ -278,6 +278,10 @@ RideMix.prototype.generate_markers = function() {
         place = this.search_results[i];
         pos = new google.maps.LatLng(place['lat'],place['lng']);
         temp_loc_marker = new MarkerWithLabel({map: this.map,position: pos,animation: google.maps.Animation.DROP, labelContent: place.name, labelClass: "labels", labelAnchor: new google.maps.Point(50, 0),});
+        var obj_id = place.id;
+        google.maps.event.addListener(temp_loc_marker, "click", function() {
+            changePage(''+obj_id);
+        });
         this.search_markers.push(temp_loc_marker)
     }
 }

@@ -94,24 +94,23 @@ RideMix.prototype.handle_no_geolocation = function(error_flag) {
 RideMix.prototype.update_results_list = function() {
 	console.log("update_results_list called");
 	var url = 'get/rankings?location=';
-    var latitude = this.cur_loc_marker.position.lat();
-    var longitude = this.cur_loc_marker.position.lng();
-    var ll_string = latitude + "," + longitude;
-    url += ll_string;
-    url += '&types=' + this.types;
-    console.log(url);
+  var latitude = this.cur_loc_marker.position.lat();
+  var longitude = this.cur_loc_marker.position.lng();
+  var ll_string = latitude + "," + longitude;
+  url += ll_string;
+  url += '&types=' + this.types;
     
-    var obj = this;
-    var regular_request = $.getJSON(url, function(json_data) {
-    	obj.search_results = json_data;
-        obj.get_facebook_checkins();
-    });
+  var obj = this;
+  var regular_request = $.getJSON(url, function(json_data) {
+    obj.search_results = json_data;
+    obj.get_facebook_checkins();
+  });
 
-    url = "/get/trending?location=" + ll_string
-    var trending_request = $.getJSON(url, function(json_data) {
-      obj.trending_results = json_data;
-      obj.calc_latlng_dists(obj.trending_results);
-    });
+  url = "/get/trending?location=" + ll_string
+  var trending_request = $.getJSON(url, function(json_data) {
+    obj.trending_results = json_data;
+    obj.calc_latlng_dists(obj.trending_results);
+  });
 }
 
 RideMix.prototype.get_facebook_checkins = function() {
@@ -177,6 +176,7 @@ RideMix.prototype.calc_latlng_dists = function(results_list) {
 RideMix.prototype.dist_callback = function(response, status, results_list) {
 	console.log("dist_callback called");
 	if (status == google.maps.DistanceMatrixStatus.OK) {
+    console.log('Found distances');
     	for (var i = 0; i < response.originAddresses.length; i++) {
       		var results = response.rows[i].elements;
       		for (var j = 0; j < results.length; j++) {

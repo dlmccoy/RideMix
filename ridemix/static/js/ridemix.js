@@ -142,7 +142,7 @@ RideMix.prototype.fb_index_of = function(obj,array) {
     result = array[i];
     if (result.name == obj.name) {
       return i;
-    } else if (result.number.replace(/\d/g,'') == obj.phone) {
+    } else if (result.number && ruesult.number.replace(/\d/g,'') == obj.phone) {
       return i;
     }
     else {
